@@ -140,6 +140,34 @@ body {
     color: #fff;
 }
 
+/* Floating Theme Button */
+.floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #222;
+    border: 1px solid #333;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
 /* Layout */
 .container {
     flex: 1;
@@ -450,6 +478,48 @@ button.primary:hover,
     }
 
     .panel {
+        padding: 20px;
+    }
+
+    #connection-status {
+        text-align: center;
+        height: 20px;
+        margin-bottom: 10px;
+        font-family: monospace;
+        color: var(--success);
+    }
+
+    /* Input Group */
+    .input-group {
+        flex-direction: column;
+    }
+
+    /* Fix buttons on mobile */
+    #connect-btn,
+    button.primary {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .action-buttons button {
+        /* Ensure icon buttons don't get squeezed */
+        width: 50px !important;
+        height: 50px !important;
+        flex: 0 0 50px !important;
+        /* Prevent shrinking */
+        white-space: normal;
+        overflow: visible;
+        /* Show icon fully */
+        text-overflow: clip;
+        /* No dots! */
+    }
+
+    /* Hide custom cursor on mobile */
+    .cursor-ring {
+        display: none !important;
+    }
+
+    .dropzone {
         padding: 20px;
     }
 
