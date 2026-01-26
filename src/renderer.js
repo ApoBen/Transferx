@@ -399,7 +399,8 @@ class Particle {
         this.size = Math.random() * 5 + 2;
         this.speedX = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
-        this.color = `hsl(${Math.random() * 60 + 240}, 100%, 70%)`;
+        // Silver/White particles for dark theme
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`;
         this.life = 100;
     }
     update() {
