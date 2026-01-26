@@ -459,36 +459,41 @@ button.primary:hover,
 
     /* Layout Adjustments */
     .container {
-        padding: 10px;
+        padding: 5px;
+        /* Reduced vertical padding */
         overflow-x: hidden;
     }
 
     h1 {
         font-size: 1.8rem;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     /* Stack cards vertically */
     .card-container {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         width: 100%;
-        max-width: 320px;
+        max-width: 100%;
+        /* Ensure it doesn't exceed container */
     }
 
     .card {
         width: 100%;
-        padding: 30px 20px;
+        /* Full width cards */
+        padding: 25px 20px;
     }
 
     .card:hover {
-        transform: translateY(-5px);
-        /* Reduce movement */
+        transform: none;
+        /* Disable hover movement on touch */
     }
 
     .panel {
-        padding: 25px 20px;
+        padding: 20px 15px;
+        /* Reduced padding */
         border-radius: 20px;
+        width: 100%;
     }
 
     .back-btn {
@@ -496,21 +501,25 @@ button.primary:hover,
         left: 10px;
         padding: 8px 16px;
         font-size: 0.9rem;
+        position: relative;
+        /* Make it flow in document to avoid overlap */
+        margin-bottom: 10px;
+        display: inline-block;
     }
 
     /* Code Display */
     #my-peer-id {
-        font-size: 1.8rem;
-        /* Break long words */
+        font-size: 1.5rem;
         word-break: break-all;
         white-space: pre-wrap;
     }
 
     .view {
-        padding: 60px 15px 20px;
-        /* More top padding for back button */
+        padding: 10px;
         justify-content: flex-start;
-        /* Align top instead of center */
+        height: auto;
+        min-height: 100%;
+        overflow-y: auto;
     }
 
     /* Input Group */
@@ -518,12 +527,29 @@ button.primary:hover,
         flex-direction: column;
     }
 
-    #connect-btn {
+    #connect-btn,
+    button {
         width: 100%;
+        /* Make buttons full width */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 15px;
+        /* Slightly smaller padding */
+    }
+
+    .action-buttons button {
+        width: 50px;
+        /* Keep icon buttons square */
+        flex-shrink: 0;
     }
 
     /* Hide custom cursor on mobile */
     .cursor-ring {
-        display: none;
+        display: none !important;
+    }
+
+    .dropzone {
+        padding: 20px;
     }
 }
