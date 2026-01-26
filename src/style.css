@@ -267,9 +267,9 @@ body.amoled-theme .card:hover {
     font-size: 50px;
     margin-bottom: 25px;
     transition: 0.3s;
-    /* FULL BRIGHTNESS */
-    opacity: 1 !important;
+    /* FULL BRIGHTNESS & COLOR */
     filter: none !important;
+    opacity: 1 !important;
 }
 
 .card:hover .icon {
@@ -365,14 +365,14 @@ body.amoled-theme .input-wrapper {
     color: var(--text-main);
     font-family: var(--font-main);
     font-size: 1.4rem;
-    font-weight: 700;
+    font-weight: 600;
     flex: 1;
     min-width: 0;
     outline: none;
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: normal;
     padding: 10px 5px;
-    text-transform: uppercase;
+    text-transform: none;
 }
 
 .terminal-panel input[type="text"]::placeholder {
@@ -673,7 +673,9 @@ body.amoled-theme .back-btn {
     .terminal-panel input[type="text"] {
         font-size: 1.1rem;
         padding: 12px 0;
-        letter-spacing: 0.5px;
+        text-transform: none;
+        letter-spacing: normal;
+        font-family: var(--font-main);
     }
 
     .icon-btn-large {
