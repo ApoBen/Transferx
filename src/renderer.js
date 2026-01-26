@@ -418,8 +418,9 @@ class Particle {
         this.speedY = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
-        // Silver Dust for Dark Theme
-        this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
+        this.speedY = Math.random() * 2 - 1;
+        // Strictly White/Silver Particles (Monochromatic)
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.6 + 0.2})`;
         this.life = 100;
     }
     update() {

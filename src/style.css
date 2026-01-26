@@ -1,55 +1,46 @@
 :root {
-    /* Apple "Pro" Palette (Titanium/Midnight) */
-    --bg-gradient: radial-gradient(circle at 50% 0%, #2c3e50 0%, #000000 100%);
-    --bg-color: #000000;
+    /* Elegant Dark Palette (Midnight/Charcoal) */
+    --bg-gradient: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+    --bg-color: #1c1c1e;
 
-    /* Glassmorphism - Premium Dark */
-    --card-bg: rgba(28, 28, 30, 0.65);
-    /* iOS Dark System Gray 6 equivalent transparency */
-    --card-border: rgba(255, 255, 255, 0.12);
-    /* Subtle separation */
-    --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    --card-hover-bg: rgba(44, 44, 46, 0.75);
+    /* Cards - Premium Matte Dark */
+    --card-bg: rgba(44, 44, 46, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    --card-hover-bg: rgba(58, 58, 60, 0.8);
 
-    --text-main: #f5f5f7;
-    /* Off-white for comfort */
-    --text-muted: #86868b;
-    /* Apple grey */
+    --text-main: #f2f2f7;
+    --text-muted: #aeaeb2;
 
-    /* Accents - "Titanium Blue" */
-    --accent: #2980b9;
-    --accent-hover: #3498db;
-    --accent-glow: rgba(41, 128, 185, 0.3);
+    /* Accents - Sophisticated Blue/Silver */
+    --accent: #0a84ff;
+    --accent-hover: #64d2ff;
+    --accent-glow: rgba(10, 132, 255, 0.2);
 
-    --success: #32d74b;
-    /* iOS Green */
+    --success: #30d158;
     --danger: #ff453a;
-    /* iOS Red */
 
     --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
-    --border-radius: 18px;
+    --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
+    --border-radius: 12px;
 }
 
 body.amoled-theme {
-    /* High Contrast OLED Mode */
-    --bg-gradient: none;
+    /* Rich AMOLED (Not flat black) */
+    --bg-gradient: radial-gradient(circle at 50% 10%, #111111 0%, #000000 100%);
     --bg-color: #000000;
 
-    --card-bg: #000000;
-    --card-border: #333333;
-    /* Stronger border for contrast */
-    --card-shadow: none;
-    /* Flat look for pure black feel */
-    --card-hover-bg: #111111;
+    --card-bg: rgba(20, 20, 20, 0.6);
+    --card-border: #333;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    --card-hover-bg: #1a1a1a;
 
     --text-main: #ffffff;
-    --text-muted: #a1a1a1;
+    --text-muted: #8e8e93;
 
     --accent: #ffffff;
-    /* Monochrome accent */
-    --accent-hover: #cccccc;
-    --accent-glow: rgba(255, 255, 255, 0.1);
+    /* Monochrome elegance */
+    --accent-hover: #d1d1d6;
 }
 
 body.amoled-theme .bg-blobs {
@@ -74,11 +65,9 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    letter-spacing: -0.02em;
-    /* Apple typography tweak */
 }
 
-/* Background Blobs (Atmospheric Dust) */
+/* Background Blobs (Subtle Atmosphere) */
 .bg-blobs {
     position: fixed;
     top: 0;
@@ -88,69 +77,70 @@ body {
     overflow: hidden;
     z-index: -1;
     pointer-events: none;
+    opacity: 0.15;
 }
 
 .blob {
     position: absolute;
     filter: blur(100px);
-    opacity: 0.25;
-    animation: blobFloat 25s infinite alternate ease-in-out;
+    opacity: 0.4;
+    animation: blobFloat 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .blob-1 {
     top: -20%;
     right: -10%;
-    width: 70vw;
-    height: 70vw;
-    background: #2980b9;
+    width: 60vw;
+    height: 60vw;
+    background: #0a84ff;
 }
 
 .blob-2 {
     bottom: -20%;
     left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: #8e44ad;
+    width: 50vw;
+    height: 50vw;
+    background: #5e5ce6;
     animation-delay: -5s;
 }
 
 @keyframes blobFloat {
     0% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0);
     }
 
     100% {
-        transform: translate(-30px, 30px) scale(1.05);
+        transform: translate(-20px, 20px);
     }
 }
 
 /* Floating Theme Button */
 .floating-btn {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 44px;
-    height: 44px;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: rgba(44, 44, 46, 0.8);
+    background: rgba(28, 28, 30, 0.8);
     border: 1px solid var(--card-border);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    color: var(--text-main);
+    color: var(--text-muted);
     font-size: 1.2rem;
     cursor: pointer;
     z-index: 2000;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .floating-btn:hover {
-    transform: scale(1.05);
-    background: var(--text-main);
-    color: var(--bg-color);
+    transform: scale(1.1);
+    color: var(--text-main);
+    background: rgba(58, 58, 60, 0.9);
 }
 
 /* Layout */
@@ -161,8 +151,8 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
-    justify-content: center;
-    /* Center views horizontally */
+    /* Center logic */
+    flex-direction: column;
 }
 
 .view {
@@ -172,20 +162,20 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 60px 40px;
+    /* More top padding */
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.96);
-    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    max-width: 1200px;
-    /* Limit max width for large screens */
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .view.active {
     opacity: 1;
     pointer-events: auto;
-    transform: scale(1);
+    transform: translateY(0);
     z-index: 10;
 }
 
@@ -194,30 +184,30 @@ body {
 }
 
 h1 {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     font-weight: 700;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
     color: var(--text-main);
-    letter-spacing: -0.04em;
+    letter-spacing: -0.5px;
     text-align: center;
 }
 
 /* Home Cards */
 .card-container {
     display: flex;
-    gap: 40px;
+    gap: 30px;
 }
 
 .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 24px;
-    padding: 50px 40px;
-    width: 300px;
+    border-radius: 20px;
+    padding: 40px;
+    width: 280px;
     text-align: center;
     cursor: pointer;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     box-shadow: var(--card-shadow);
     transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -225,51 +215,51 @@ h1 {
 .card:hover {
     background: var(--card-hover-bg);
     transform: translateY(-8px);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .card .icon {
     font-size: 48px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     transition: 0.3s;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+    filter: grayscale(100%) opacity(0.8);
 }
 
 .card:hover .icon {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 30px var(--accent-glow));
+    filter: grayscale(0%) opacity(1);
+    /* No color filter, keep original emoji color */
 }
 
 .card h2 {
-    font-size: 1.6rem;
-    margin-bottom: 12px;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
     color: var(--text-main);
     font-weight: 600;
 }
 
 .card p {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
-/* Receiver View Redesign */
+/* Receiver Logic */
 .receiver-layout {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 30px;
     width: 100%;
-    max-width: 600px;
+    max-width: 550px;
     align-items: center;
 }
 
 .terminal-panel {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(30px);
-    border-radius: 20px;
-    padding: 25px;
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 30px;
     width: 100%;
     box-shadow: var(--card-shadow);
 }
@@ -278,7 +268,7 @@ h1 {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .status-dot {
@@ -300,14 +290,14 @@ h1 {
     gap: 10px;
     background: rgba(0, 0, 0, 0.2);
     padding: 8px;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid transparent;
     transition: 0.3s;
 }
 
 .input-wrapper:focus-within {
     border-color: var(--accent);
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .terminal-panel input[type="text"] {
@@ -315,7 +305,6 @@ h1 {
     border: none;
     color: var(--text-main);
     font-family: var(--font-mono);
-    /* Keep mono for code input */
     font-size: 1.4rem;
     font-weight: 500;
     flex: 1;
@@ -326,14 +315,10 @@ h1 {
     text-transform: uppercase;
 }
 
-.terminal-panel input[type="text"]::placeholder {
-    color: rgba(255, 255, 255, 0.1);
-}
-
 .icon-btn-large {
-    background: var(--text-main);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: #000;
+    color: var(--text-main);
     width: 44px;
     height: 44px;
     border-radius: 10px;
@@ -348,7 +333,6 @@ h1 {
 .icon-btn-large:hover {
     background: var(--accent);
     color: #fff;
-    transform: scale(1.05);
 }
 
 /* File Grid */
@@ -375,34 +359,29 @@ h1 {
 .file-item {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
     padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 10px;
-    transition: 0.3s;
-    min-width: 0;
-    /* Important for flex/grid overflow */
+    transition: 0.2s;
 }
 
 .file-item:hover {
-    transform: translateY(-3px);
     background: var(--card-hover-bg);
 }
 
 .file-name {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-main);
     font-weight: 500;
     word-break: break-all;
-    /* Prevent overflow */
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* Limit lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -415,27 +394,26 @@ h1 {
 .download-btn {
     width: 100%;
     padding: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     border: none;
     color: var(--text-main);
     border-radius: 8px;
     font-size: 0.8rem;
-    font-weight: 500;
     cursor: pointer;
     margin-top: auto;
     transition: 0.2s;
 }
 
 .download-btn:hover {
-    background: var(--text-main);
-    color: #000;
+    background: var(--accent);
+    color: white;
 }
 
 /* Sender Panel */
 .panel {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(20px);
     border-radius: 20px;
     padding: 35px;
     width: 100%;
@@ -468,66 +446,87 @@ h1 {
     font-size: 1.1rem;
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: 0.2s;
-    color: var(--text-main);
+    color: var(--text-muted);
 }
 
 .action-buttons button:hover {
     background: var(--text-main);
     color: #000;
-    transform: translateY(-2px);
 }
 
+/* Dropzone (FIXED WIDTH OVERFLOW) */
 .dropzone {
-    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border: 2px dashed rgba(255, 255, 255, 0.1);
     border-radius: 16px;
-    padding: 40px 20px;
+    padding: 50px 30px;
+    /* Increased padding */
     text-align: center;
     color: var(--text-muted);
     transition: 0.3s;
+    background: rgba(0, 0, 0, 0.1);
+    min-height: 150px;
+    /* Ensure height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropzone p {
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 100%;
 }
 
 .dropzone:hover {
     border-color: var(--accent);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
 }
 
-/* Back Button */
+/* Back Button (FIXED OVERFLOW) */
 .back-btn {
     position: absolute;
     top: 30px;
     left: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: none;
+    background: rgba(44, 44, 46, 0.9);
+    border: 1px solid var(--card-border);
     color: var(--text-main);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    padding: 8px 18px;
+    /* Proper padding for text */
+    border-radius: 20px;
+    /* Pill shape */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     cursor: pointer;
     transition: 0.2s;
     z-index: 50;
+    white-space: nowrap;
+    /* Prevent wrap */
+    width: auto;
+    /* Allow auto width */
+    min-width: 80px;
 }
 
 .back-btn:hover {
     background: var(--text-main);
     color: #000;
+    transform: translateX(-2px);
 }
 
-/* Status Logic (Defaults) */
+/* Status Logic */
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
     padding: 40px 20px;
     color: var(--text-muted);
     border: 1px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    border-radius: 12px;
     font-size: 0.9rem;
 }
 
@@ -538,8 +537,6 @@ h1 {
         display: block;
     }
 
-    /* Reset flex center for scroll */
-
     h1 {
         font-size: 2.2rem;
         margin-bottom: 40px;
@@ -547,12 +544,10 @@ h1 {
     }
 
     .view {
-        padding: 60px 20px 20px 20px;
-        /* Top padding for back button */
+        padding: 70px 20px 20px 20px;
         height: auto;
         min-height: 100%;
         justify-content: flex-start;
-        /* Top align content */
     }
 
     .card-container {
@@ -566,11 +561,13 @@ h1 {
         padding: 30px;
     }
 
-    .card:hover {
-        transform: scale(1.0);
+    /* Back button positioning for mobile safety */
+    .back-btn {
+        top: 20px;
+        left: 15px;
+        font-size: 0.9rem;
+        padding: 8px 16px;
     }
-
-    /* Remove heavy transform */
 
     .file-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -581,15 +578,9 @@ h1 {
         font-size: 1.1rem;
     }
 
-    /* Code Display Overflow Fix */
     #my-peer-id {
         font-size: 1.4rem;
         word-break: break-all;
-    }
-
-    .back-btn {
-        top: 15px;
-        left: 15px;
     }
 
     .cursor-ring {
