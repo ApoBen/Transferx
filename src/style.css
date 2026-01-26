@@ -423,23 +423,28 @@ body.amoled-theme h1 {
 .action-buttons button {
     background: var(--text-main);
     color: var(--bg-color);
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
-    font-size: 1.3rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    font-size: 1.4rem;
     cursor: pointer;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .action-buttons button:hover {
-    transform: translateY(-3px) scale(1.1);
+    transform: translateY(-5px) scale(1.1);
     background: var(--accent);
     color: white;
+    box-shadow: 0 15px 40px var(--accent-glow);
+}
+
+body.amoled-theme .action-buttons button {
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .back-btn {
@@ -522,8 +527,8 @@ body.amoled-theme h1 {
 @media (max-width: 768px) {
     .container {
         padding-bottom: 140px;
-        /* More space for floating buttons */
-        padding-top: 10px;
+        padding-top: 100px;
+        /* Increased to clear the back button */
     }
 
     h1 {
@@ -580,10 +585,14 @@ body.amoled-theme h1 {
     }
 
     .back-btn {
-        top: 20px;
-        left: 20px;
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
+        top: 25px;
+        left: 25px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
+        z-index: 5000;
+        /* Ensure it stays on top */
+        background: var(--card-bg);
+        border: 1.5px solid var(--card-border);
     }
 }
