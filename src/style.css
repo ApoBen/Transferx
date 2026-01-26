@@ -267,8 +267,9 @@ body.amoled-theme .card:hover {
     font-size: 50px;
     margin-bottom: 25px;
     transition: 0.3s;
-    /* FULL COLOR - NO GRAYSCALE */
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    /* FULL BRIGHTNESS */
+    opacity: 1 !important;
+    filter: none !important;
 }
 
 .card:hover .icon {
@@ -363,17 +364,14 @@ body.amoled-theme .input-wrapper {
     border: none;
     color: var(--text-main);
     font-family: var(--font-main);
-    /* Changed from Mono to Main Font */
-    font-size: 1.5rem;
-    /* Larger */
+    font-size: 1.4rem;
     font-weight: 700;
     flex: 1;
     min-width: 0;
-    /* Crucial for flex child resizing */
     outline: none;
     text-align: center;
     letter-spacing: 1px;
-    padding: 5px;
+    padding: 10px 5px;
     text-transform: uppercase;
 }
 
@@ -657,21 +655,46 @@ body.amoled-theme .back-btn {
         gap: 12px;
     }
 
-    #my-peer-id {
-        font-size: 1.6rem;
+    /* Better Mobile Input/Button Layout */
+    .input-wrapper {
+        padding: 5px;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Ensure input takes space but button stays on same line */
-    .input-wrapper {
-        padding: 8px;
+    .terminal-panel {
+        padding: 25px 15px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .terminal-panel input[type="text"] {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        padding: 12px 0;
+        letter-spacing: 0.5px;
     }
 
     .icon-btn-large {
-        width: 45px;
-        height: 45px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .terminal-header {
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    /* Force Emoji Brightness and Color */
+    .icon,
+    .icon-btn-large,
+    .download-btn,
+    .action-buttons button {
+        opacity: 1 !important;
+        filter: none !important;
     }
 }
