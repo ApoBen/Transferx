@@ -411,6 +411,35 @@ body.amoled-theme h1 {
     font-size: 2.4rem;
     font-weight: 900;
     color: var(--text-main);
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.action-buttons button {
+    background: var(--text-main);
+    color: var(--bg-color);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons button:hover {
+    transform: translateY(-3px) scale(1.1);
+    background: var(--accent);
+    color: white;
 }
 
 .back-btn {
