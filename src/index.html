@@ -74,16 +74,30 @@
         <!-- RECEIVER VIEW -->
         <div id="view-receiver" class="view hidden">
             <button class="back-btn" data-target="home">❮ Geri</button>
-            <div class="panel">
-                <div class="input-group">
-                    <input type="text" id="remote-peer-id" placeholder="Transfer Kimliğini Girin">
-                    <button id="connect-btn">Bağlan</button>
+
+            <div class="receiver-layout">
+                <!-- Connection Terminal -->
+                <div class="terminal-panel">
+                    <div class="terminal-header">
+                        <span class="status-dot"></span>
+                        <span class="status-text" id="connection-status">Sistem Bekleniyor...</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <span class="prompt">></span>
+                        <input type="text" id="remote-peer-id" placeholder="KIMLIK_GIRIN" autocomplete="off">
+                        <button id="connect-btn" class="icon-btn-large">➜</button>
+                    </div>
                 </div>
 
-                <div id="connection-status"></div>
-
-                <div class="file-list" id="receiver-file-list">
-                    <!-- Dosyalar -->
+                <!-- File Grid -->
+                <div class="file-grid-area">
+                    <h3>Gelen Dosyalar</h3>
+                    <div class="file-grid" id="receiver-file-list">
+                        <!-- Empty State -->
+                        <div class="empty-state">
+                            Waiting for data stream...
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

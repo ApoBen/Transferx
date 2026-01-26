@@ -360,10 +360,27 @@ btns.refreshId.addEventListener('click', () => {
 
 
 
+// --- Theme Logic ---
+function applyTheme(isAmoled) {
+    if (isAmoled) {
+        document.body.classList.add('amoled-theme');
+        btns.themeToggle.textContent = '☀️';
+    } else {
+        document.body.classList.remove('amoled-theme');
+        btns.themeToggle.textContent = '🌑';
+    }
+    localStorage.setItem('theme', isAmoled ? 'amoled' : 'dark');
+}
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'amoled') {
+    applyTheme(true);
+}
+
 btns.themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('amoled-theme');
-    const isAmoled = document.body.classList.contains('amoled-theme');
-    btns.themeToggle.textContent = isAmoled ? '☀️' : '🌑';
+    const isAmoled = !document.body.classList.contains('amoled-theme');
+    applyTheme(isAmoled);
 });
 
 btns.connect.addEventListener('click', () => {
