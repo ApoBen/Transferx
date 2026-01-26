@@ -492,33 +492,59 @@ body.amoled-theme h1 {
 
 @media (max-width: 768px) {
     .container {
-        padding-bottom: 120px;
-        padding-top: 20px;
+        padding-bottom: 140px;
+        /* More space for floating buttons */
+        padding-top: 10px;
     }
 
     h1 {
-        font-size: 2.8rem;
-        margin-bottom: 30px;
+        font-size: 2.6rem;
+        margin-bottom: 25px;
     }
 
     .card {
         width: 100%;
-        padding: 35px 25px;
+        padding: 30px 20px;
+    }
+
+    .receiver-layout {
+        width: 100%;
+        max-width: 100%;
+        gap: 20px;
     }
 
     .terminal-panel,
     .panel {
-        padding: 30px 20px;
+        padding: 25px 15px;
+        width: 100%;
+        border-radius: 20px;
+    }
+
+    .input-wrapper {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .terminal-panel input[type="text"] {
+        font-size: 1.1rem;
+    }
+
+    .icon-btn-large {
+        width: 46px;
+        height: 46px;
+        font-size: 1.3rem;
+        border-radius: 12px;
     }
 
     #my-peer-id {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
     .back-btn {
-        top: 15px;
-        left: 15px;
-        width: 42px;
-        height: 42px;
+        top: 20px;
+        left: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 }
