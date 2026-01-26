@@ -1,0 +1,25 @@
+{
+  "name": "transferx",
+  "version": "1.0.0",
+  "description": "P2P Dosya Transfer Uygulaması",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win"
+  },
+  "keywords": [
+    "p2p",
+    "file-transfer",
+    "electron"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "peerjs": "^1.5.2",
+    "uuid": "^9.0.1"
+  }
+}
