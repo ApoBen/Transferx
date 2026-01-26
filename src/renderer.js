@@ -417,8 +417,9 @@ class Particle {
         this.speedX = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
         this.speedY = Math.random() * 2 - 1;
-        // Vibrant confetti particles
-        this.color = `hsla(${Math.random() * 360}, 100%, 70%, 0.8)`;
+        this.speedY = Math.random() * 2 - 1;
+        // Silver Dust for Dark Theme
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
         this.life = 100;
     }
     update() {
