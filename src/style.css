@@ -28,21 +28,23 @@
 }
 
 body.amoled-theme {
-    /* --- Light Theme (Beautiful & Clean) --- */
-    --bg-gradient: radial-gradient(circle at top left, #f0f2f5 0%, #d9e2ec 100%);
-    --bg-color: #f2f2f7;
+    /* --- Sophisticated Light Theme (Softer, Greyish, Modern) --- */
+    --bg-gradient: radial-gradient(circle at top left, #e5e5e7 0%, #d1d1d6 100%);
+    --bg-color: #e5e5e7;
 
-    --card-bg: rgba(255, 255, 255, 0.65);
-    --card-border: rgba(255, 255, 255, 0.8);
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(0, 0, 0, 0.05);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     --card-hover-bg: rgba(255, 255, 255, 0.9);
 
-    --text-main: #1c1c1e;
-    --text-muted: #636366;
+    --text-main: #1d1d1f;
+    /* Apple's specific dark grey for text */
+    --text-muted: #86868b;
 
-    --accent: #007aff;
-    --accent-hover: #0056b3;
-    --accent-glow: rgba(0, 122, 255, 0.2);
+    --accent: #0071e3;
+    /* Slightly deeper blue */
+    --accent-hover: #0077ed;
+    --accent-glow: rgba(0, 113, 227, 0.15);
 }
 
 body.amoled-theme .bg-blobs {
@@ -162,8 +164,9 @@ body {
 }
 
 body.amoled-theme .floating-btn {
-    background: rgba(255, 255, 255, 0.8);
-    color: #000;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-main);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .floating-btn:hover {
@@ -665,9 +668,11 @@ body.amoled-theme .back-btn {
     }
 
     .terminal-panel {
-        padding: 25px 15px;
+        padding: 30px 20px;
+        /* Better spacing */
         width: 100%;
         max-width: 100%;
+        border-radius: 20px;
     }
 
     .terminal-panel input[type="text"] {
