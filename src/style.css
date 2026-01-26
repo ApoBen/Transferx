@@ -14,9 +14,33 @@
 }
 
 body.amoled-theme {
-    --bg-gradient: linear-gradient(135deg, #000000, #121212);
-    --card-glass: rgba(20, 20, 20, 0.6);
+    --bg-gradient: none;
     --bg-color: #000000;
+    --card-glass: rgba(10, 10, 10, 0.8);
+    --card-border: rgba(255, 255, 255, 0.15);
+}
+
+body.amoled-theme .bg-blobs {
+    display: none;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 * {
@@ -274,21 +298,28 @@ h1 {
 
 input[type="text"] {
     width: 100%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--card-border);
-    padding: 18px 24px;
-    border-radius: 16px;
+    padding: 20px 24px;
+    border-radius: 18px;
     color: white;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-family: inherit;
     outline: none;
     transition: all 0.3s;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.3);
 }
 
 input[type="text"]:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
-    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(108, 92, 231, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(1.02);
 }
 
 button.primary,

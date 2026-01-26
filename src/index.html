@@ -17,11 +17,15 @@
         <div class="blob blob-2"></div>
     </div>
 
+    <!-- Cursor Canvas -->
+    <canvas id="cursor-canvas"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999;"></canvas>
+
     <div class="title-bar">
         <div class="app-title">TransferX</div>
         <div style="flex:1; -webkit-app-region: drag;"></div>
-        <div class="win-controls" style="-webkit-app-region: no-drag;">
-            <!-- Window controls could go here if custom -->
+        <div class="win-controls" style="-webkit-app-region: no-drag; display: flex; gap: 10px;">
+            <button id="theme-toggle-btn" class="icon-btn" title="AMOLED Modu">🌑</button>
         </div>
     </div>
 

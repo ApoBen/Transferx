@@ -35,6 +35,7 @@ const btns = {
     back: document.querySelectorAll('.back-btn'),
     copyId: document.getElementById('copy-id-btn'),
     refreshId: document.getElementById('refresh-id-btn'),
+    themeToggle: document.getElementById('theme-toggle-btn'),
     connect: document.getElementById('connect-btn')
 };
 
@@ -359,6 +360,12 @@ btns.refreshId.addEventListener('click', () => {
 
 
 
+btns.themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('amoled-theme');
+    const isAmoled = document.body.classList.contains('amoled-theme');
+    btns.themeToggle.textContent = isAmoled ? '☀️' : '🌑';
+});
+
 btns.connect.addEventListener('click', () => {
     const id = dom.remotePeerIdInput.value;
     if (id) connectToPeer(id);
@@ -373,54 +380,67 @@ function formatBytes(bytes, decimals = 2) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-// --- Cursor Effect ---
-const cursorRing = document.createElement('div');
-cursorRing.classList.add('cursor-ring');
-document.body.appendChild(cursorRing);
+// --- Particle Cursor Effect ---
+const canvas = document.getElementById('cursor-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-let mouseX = 0;
-let mouseY = 0;
-let cursorX = 0;
-let cursorY = 0;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-// Mouse pozisyonunu güncelle
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 5 + 2;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.color = `hsl(${Math.random() * 60 + 240}, 100%, 70%)`;
+        this.life = 100;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.size *= 0.95;
+        this.life -= 2;
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.life / 100;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
 
-// Tıklama efekti
-document.addEventListener('mousedown', () => cursorRing.classList.add('active'));
-document.addEventListener('mouseup', () => cursorRing.classList.remove('active'));
-
-// Animasyon döngüsü (Lerp - Smooth Follow)
-// Animasyon döngüsü (Lerp - Smooth Follow)
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-function animateCursor() {
-    if (isTouchDevice) return; // Disable on touch devices
-
-    // 0.15 = Takip hızı (daha düşük = daha "ağır/lazy", daha yüksek = daha "sıkı")
-    // Bu gecikme "ivmelenme" hissi yaratır.
-    const speed = 0.15;
-
-    cursorX += (mouseX - cursorX) * speed;
-    cursorY += (mouseY - cursorY) * speed;
-
-    // Transform kullanarak pozisyon güncelle (GPU dostu)
-    // rotate animasyonu CSS'de handle ediliyor, biz sadece pozisyonu set ediyoruz.
-    // Ancak CSS animation transform'u ezebilir, bu yüzden rotate'i korumak için wrapper kullanmak veya
-    // left/top kullanmak daha iyi olabilir. Performans için translate best practice ama
-    // spin animasyonu ile çakışmaması için burada left/top kullanacağız (basit çözüm).
-
-    cursorRing.style.left = `${cursorX}px`;
-    cursorRing.style.top = `${cursorY}px`;
-
-    requestAnimationFrame(animateCursor);
-}
-
 if (!isTouchDevice) {
-    animateCursor();
+    window.addEventListener('mousemove', (e) => {
+        for (let i = 0; i < 3; i++) {
+            particles.push(new Particle(e.clientX, e.clientY));
+        }
+    });
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            if (particles[i].life <= 0 || particles[i].size <= 0.2) {
+                particles.splice(i, 1);
+                i--;
+            }
+        }
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
 } else {
-    cursorRing.style.display = 'none';
+    canvas.style.display = 'none';
 }
+
