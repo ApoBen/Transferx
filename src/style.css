@@ -544,25 +544,35 @@ body.amoled-theme h1 {
 
     .terminal-panel,
     .panel {
-        padding: 25px 15px;
+        padding: 25px 12px;
+        /* Narrower horizontal padding */
         width: 100%;
         border-radius: 20px;
     }
 
     .input-wrapper {
-        padding: 10px;
-        gap: 10px;
+        padding: 8px;
+        /* Slightly less padding */
+        gap: 8px;
+        flex-wrap: nowrap;
+        /* Ensure they stay on the same line */
     }
 
     .terminal-panel input[type="text"] {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        /* Smaller font to save space */
+        min-width: 0;
+        /* Allow flex shrinking */
     }
 
     .icon-btn-large {
-        width: 46px;
-        height: 46px;
-        font-size: 1.3rem;
+        width: 44px;
+        /* Slightly smaller button */
+        height: 44px;
+        font-size: 1.2rem;
         border-radius: 12px;
+        flex-shrink: 0;
+        /* Prevent shrinking */
     }
 
     #my-peer-id {
