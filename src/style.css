@@ -1,51 +1,64 @@
 :root {
-    /* Elegant Dark Palette (Midnight/Charcoal) */
-    --bg-gradient: linear-gradient(135deg, #1c1c1e, #2c2c2e);
-    --bg-color: #1c1c1e;
-
-    /* Cards - Premium Matte Dark */
-    --card-bg: rgba(44, 44, 46, 0.7);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    --card-hover-bg: rgba(58, 58, 60, 0.8);
-
-    --text-main: #f2f2f7;
-    --text-muted: #aeaeb2;
-
-    /* Accents - Sophisticated Blue/Silver */
-    --accent: #0a84ff;
-    --accent-hover: #64d2ff;
-    --accent-glow: rgba(10, 132, 255, 0.2);
-
-    --success: #30d158;
-    --danger: #ff453a;
-
-    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
-    --border-radius: 12px;
-}
-
-body.amoled-theme {
-    /* Rich AMOLED (Not flat black) */
-    --bg-gradient: radial-gradient(circle at 50% 10%, #111111 0%, #000000 100%);
+    /* --- Elegant Dark Theme (PC & Mobile Unified) --- */
+    --bg-gradient: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #000000 100%);
     --bg-color: #000000;
 
-    --card-bg: rgba(20, 20, 20, 0.6);
-    --card-border: #333;
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    --card-hover-bg: #1a1a1a;
+    /* Cards - Premium Matte Dark */
+    --card-bg: rgba(28, 28, 30, 0.7);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --card-hover-bg: rgba(44, 44, 46, 0.85);
 
     --text-main: #ffffff;
     --text-muted: #8e8e93;
 
-    --accent: #ffffff;
-    /* Monochrome elegance */
-    --accent-hover: #d1d1d6;
+    /* Accents - Sophisticated Blue (iOS Style) */
+    --accent: #0a84ff;
+    --accent-hover: #5ac8fa;
+    --accent-glow: rgba(10, 132, 255, 0.4);
+
+    --success: #32d74b;
+    --danger: #ff453a;
+
+    /* Modern Fonts Only - No Monospace in standard UI */
+    --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
+    /* Only for code */
+    --border-radius: 16px;
+}
+
+body.amoled-theme {
+    /* --- Light Theme (Beautiful & Clean) --- */
+    --bg-gradient: radial-gradient(circle at top left, #f0f2f5 0%, #d9e2ec 100%);
+    --bg-color: #f2f2f7;
+
+    --card-bg: rgba(255, 255, 255, 0.65);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --card-hover-bg: rgba(255, 255, 255, 0.9);
+
+    --text-main: #1c1c1e;
+    --text-muted: #636366;
+
+    --accent: #007aff;
+    --accent-hover: #0056b3;
+    --accent-glow: rgba(0, 122, 255, 0.2);
 }
 
 body.amoled-theme .bg-blobs {
-    display: none;
+    /* Show bright blobs in light mode for vibrance */
+    display: block;
+    opacity: 0.6;
 }
+
+body.amoled-theme .blob-1 {
+    background: #a29bfe;
+}
+
+body.amoled-theme .blob-2 {
+    background: #74b9ff;
+}
+
 
 * {
     box-sizing: border-box;
@@ -65,6 +78,7 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    letter-spacing: -0.02em;
 }
 
 /* Fix mobile viewport height issues */
@@ -73,7 +87,6 @@ body {
         height: 100%;
         min-height: 100vh;
         background-attachment: scroll;
-        /* Fix fixed bg issues on mobile */
     }
 }
 
@@ -88,39 +101,40 @@ body {
     z-index: -1;
     pointer-events: none;
     opacity: 0.15;
+    /* Subtle in dark mode */
 }
 
 .blob {
     position: absolute;
-    filter: blur(100px);
+    filter: blur(90px);
     opacity: 0.4;
-    animation: blobFloat 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+    animation: blobFloat 25s infinite alternate ease-in-out;
 }
 
 .blob-1 {
     top: -20%;
     right: -10%;
-    width: 60vw;
-    height: 60vw;
+    width: 70vw;
+    height: 70vw;
     background: #0a84ff;
 }
 
 .blob-2 {
     bottom: -20%;
     left: -10%;
-    width: 50vw;
-    height: 50vw;
-    background: #5e5ce6;
+    width: 60vw;
+    height: 60vw;
+    background: #64d2ff;
     animation-delay: -5s;
 }
 
 @keyframes blobFloat {
     0% {
-        transform: translate(0, 0);
+        transform: translate(0, 0) scale(1);
     }
 
     100% {
-        transform: translate(-20px, 20px);
+        transform: translate(-30px, 30px) scale(1.05);
     }
 }
 
@@ -132,25 +146,31 @@ body {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(28, 28, 30, 0.8);
+    background: rgba(44, 44, 46, 0.8);
     border: 1px solid var(--card-border);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    color: var(--text-muted);
+    color: var(--text-main);
     font-size: 1.2rem;
     cursor: pointer;
     z-index: 2000;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+body.amoled-theme .floating-btn {
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
+}
+
 .floating-btn:hover {
     transform: scale(1.1);
-    color: var(--text-main);
-    background: rgba(58, 58, 60, 0.9);
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
 }
 
 /* Layout */
@@ -162,7 +182,6 @@ body {
     height: 100%;
     display: flex;
     justify-content: center;
-    /* Center horizontally */
     overflow-x: hidden;
 }
 
@@ -175,20 +194,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    /* Generalized Padding */
+    justify-content: flex-start;
+    /* Start from top, center via margins if needed */
+    padding: 80px 20px;
     opacity: 0;
     pointer-events: none;
     transform: translateY(10px);
     transition: all 0.4s ease;
 }
 
-/* Desktop Specific Adjustments via Media Query to Ensure Unity */
 @media (min-width: 769px) {
+
+    /* On Desktop, CENTER vertically */
     .view {
         justify-content: center;
-        /* Center vertically on PC */
         padding-top: 0;
     }
 }
@@ -205,16 +224,15 @@ body {
 }
 
 h1 {
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: 700;
     margin-bottom: 50px;
     color: var(--text-main);
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
     text-align: center;
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Cards (Unified Style) */
+/* --- CARDS (Unified) --- */
 .card-container {
     display: flex;
     gap: 30px;
@@ -223,53 +241,55 @@ h1 {
 .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 40px;
     width: 280px;
     text-align: center;
     cursor: pointer;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     box-shadow: var(--card-shadow);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .card:hover {
     background: var(--card-hover-bg);
-    transform: translateY(-8px);
+    transform: translateY(-8px) scale(1.02);
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow);
-    /* Outer Glow */
+}
+
+body.amoled-theme .card:hover {
+    border-color: var(--accent);
 }
 
 .card .icon {
-    font-size: 48px;
-    margin-bottom: 20px;
+    font-size: 50px;
+    margin-bottom: 25px;
     transition: 0.3s;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-    /* No grayscale */
+    /* FULL COLOR - NO GRAYSCALE */
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
 }
 
 .card:hover .icon {
     transform: scale(1.15) rotate(5deg);
     filter: drop-shadow(0 0 20px var(--accent));
-    /* Colorful glow */
 }
 
 .card h2 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
     color: var(--text-main);
     font-weight: 600;
 }
 
 .card p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
-/* Receiver Logic */
+/* --- RECEIVER VIEW --- */
 .receiver-layout {
     display: flex;
     flex-direction: column;
@@ -282,8 +302,8 @@ h1 {
 .terminal-panel {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
+    backdrop-filter: blur(30px);
+    border-radius: 20px;
     padding: 30px;
     width: 100%;
     box-shadow: var(--card-shadow);
@@ -297,68 +317,102 @@ h1 {
 }
 
 .status-dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--text-muted);
 }
 
 .status-text {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 600;
 }
 
+/* Input Wrapper & Mobile Fix */
 .input-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 8px;
-    border-radius: 12px;
-    border: 1px solid transparent;
+    padding: 10px;
+    /* More padding */
+    border-radius: 16px;
+    border: 2px solid transparent;
     transition: 0.3s;
+}
+
+body.amoled-theme .input-wrapper {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .input-wrapper:focus-within {
     border-color: var(--accent);
     background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px var(--accent-glow);
 }
+
+.prompt {
+    display: none;
+}
+
+/* Hide > prompt for modern look */
 
 .terminal-panel input[type="text"] {
     background: transparent;
     border: none;
     color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 1.4rem;
-    font-weight: 500;
+    font-family: var(--font-main);
+    /* Changed from Mono to Main Font */
+    font-size: 1.5rem;
+    /* Larger */
+    font-weight: 700;
     flex: 1;
+    min-width: 0;
+    /* Crucial for flex child resizing */
     outline: none;
     text-align: center;
-    letter-spacing: 2px;
-    padding: 10px;
+    letter-spacing: 1px;
+    padding: 5px;
     text-transform: uppercase;
 }
 
-.icon-btn-large {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: var(--text-main);
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s;
+.terminal-panel input[type="text"]::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+    font-weight: 500;
     font-size: 1.2rem;
+    letter-spacing: normal;
+}
+
+/* Connect Button (Arrow) */
+.icon-btn-large {
+    background: var(--text-main);
+    border: none;
+    color: #000;
+    /* Contrast text */
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    /* Don't shrink on mobile! */
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+body.amoled-theme .icon-btn-large {
+    background: var(--accent);
+    color: #fff;
+}
+
 .icon-btn-large:hover {
     background: var(--accent);
     color: #fff;
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 /* File Grid */
@@ -367,13 +421,13 @@ h1 {
 }
 
 .file-grid-area h3 {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-muted);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding-left: 5px;
+    padding-left: 10px;
 }
 
 .file-grid {
@@ -386,26 +440,26 @@ h1 {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: 15px;
+    border-radius: 18px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 10px;
-    transition: 0.2s;
+    gap: 12px;
+    transition: 0.3s;
 }
 
 .file-item:hover {
     background: var(--card-hover-bg);
-    transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
 .file-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-main);
-    font-weight: 500;
-    word-break: break-all;
+    font-weight: 600;
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -414,21 +468,27 @@ h1 {
 }
 
 .file-size {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
 .download-btn {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
     color: var(--text-main);
-    border-radius: 8px;
-    font-size: 0.8rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
     cursor: pointer;
     margin-top: auto;
     transition: 0.2s;
+    font-weight: 600;
+}
+
+body.amoled-theme .download-btn {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--accent);
 }
 
 .download-btn:hover {
@@ -436,11 +496,11 @@ h1 {
     color: white;
 }
 
-/* Sender Panel */
+/* --- SENDER PANEL --- */
 .panel {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(30px);
     border-radius: 20px;
     padding: 35px;
     width: 100%;
@@ -452,71 +512,77 @@ h1 {
     text-align: center;
     margin-bottom: 30px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    border-radius: 16px;
+    padding: 25px;
+    border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+body.amoled-theme .code-display {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 #my-peer-id {
-    font-family: var(--font-mono);
-    font-size: 2rem;
+    font-family: var(--font-main);
+    font-size: 2.2rem;
     color: var(--text-main);
-    letter-spacing: 2px;
-    font-weight: 700;
-    margin: 10px 0;
+    letter-spacing: 1px;
+    font-weight: 800;
+    margin: 15px 0;
     word-break: break-all;
 }
 
 .action-buttons button {
     background: rgba(255, 255, 255, 0.1);
     border: none;
-    font-size: 1.1rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    font-size: 1.2rem;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
     transition: 0.2s;
-    color: var(--text-muted);
+    color: var(--text-main);
 }
 
 .action-buttons button:hover {
-    background: var(--text-main);
-    color: #000;
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.1);
 }
 
 .dropzone {
-    border: 2px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 50px 30px;
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    padding: 40px 20px;
     text-align: center;
     color: var(--text-muted);
     transition: 0.3s;
     background: rgba(0, 0, 0, 0.1);
-    min-height: 150px;
+    min-height: 160px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.dropzone p {
-    font-size: 1rem;
-    line-height: 1.5;
-    max-width: 100%;
+body.amoled-theme .dropzone {
+    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .dropzone:hover {
     border-color: var(--accent);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--accent-glow);
     color: var(--text-main);
 }
 
-/* Back Button (Icon Only & Unified) */
+/* Back Button (Icon) */
 .back-btn {
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    background: rgba(44, 44, 46, 0.9);
+    position: fixed;
+    /* Fixed to be safe */
+    top: 30px;
+    left: 30px;
+    background: rgba(44, 44, 46, 0.8);
     border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
     color: var(--text-main);
     width: 44px;
     height: 44px;
@@ -524,36 +590,35 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 50;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s;
+    z-index: 100;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+body.amoled-theme .back-btn {
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
 }
 
 .back-btn:hover {
-    background: var(--text-main);
-    color: #000;
     transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    background: var(--text-main);
+    color: var(--bg-color);
 }
 
-.back-btn:active {
-    transform: scale(0.95);
-}
-
-/* Status Logic */
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 40px 20px;
+    padding: 40px;
     color: var(--text-muted);
     border: 1px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    font-size: 0.9rem;
+    border-radius: 16px;
+    font-size: 0.95rem;
 }
 
-/* Mobile Adjustments */
+/* --- MOBILE SPECIFIC --- */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -561,48 +626,52 @@ h1 {
     }
 
     h1 {
-        font-size: 2.2rem;
-        margin-bottom: 40px;
-        margin-top: 20px;
+        font-size: 2.4rem;
+        margin-bottom: 30px;
+        margin-top: 50px;
     }
 
     .view {
-        /* On Mobile, layout starts from top */
-        padding: 80px 20px 20px 20px;
-        justify-content: flex-start;
-        display: flex;
+        padding: 80px 15px;
+        align-items: stretch;
+        /* Full width items */
     }
 
     .card-container {
         flex-direction: column;
-        width: 100%;
         gap: 20px;
     }
 
     .card {
         width: 100%;
-        padding: 30px;
+        padding: 35px;
     }
 
     .back-btn {
         top: 20px;
         left: 20px;
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
     }
 
     .file-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        gap: 12px;
     }
 
     #my-peer-id {
-        font-size: 1.4rem;
-        word-break: break-all;
+        font-size: 1.6rem;
     }
 
-    .cursor-ring {
-        display: none !important;
+    /* Ensure input takes space but button stays on same line */
+    .input-wrapper {
+        padding: 8px;
+    }
+
+    .terminal-panel input[type="text"] {
+        font-size: 1.2rem;
+    }
+
+    .icon-btn-large {
+        width: 45px;
+        height: 45px;
     }
 }
