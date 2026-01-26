@@ -608,13 +608,17 @@ body.amoled-theme h1 {
     }
 
     .back-btn {
-        top: 20px;
-        left: 20px;
-        width: 46px;
-        height: 46px;
-        font-size: 1.1rem;
-        z-index: 5000;
-        background: var(--card-bg);
-        border: 1.5px solid var(--card-border);
+        position: fixed !important;
+        top: 20px !important;
+        left: 20px !important;
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.2rem !important;
+        z-index: 9999 !important;
+        background: var(--card-bg) !important;
+        border: 1.5px solid var(--card-border) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 }
