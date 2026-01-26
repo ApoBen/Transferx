@@ -67,6 +67,16 @@ body {
     flex-direction: column;
 }
 
+/* Fix mobile viewport height issues */
+@media (max-width: 768px) {
+    body {
+        height: 100%;
+        min-height: 100vh;
+        background-attachment: scroll;
+        /* Fix fixed bg issues on mobile */
+    }
+}
+
 /* Background Blobs (Subtle Atmosphere) */
 .bg-blobs {
     position: fixed;
@@ -227,20 +237,23 @@ h1 {
 .card:hover {
     background: var(--card-hover-bg);
     transform: translateY(-8px);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow);
+    /* Outer Glow */
 }
 
 .card .icon {
     font-size: 48px;
     margin-bottom: 20px;
     transition: 0.3s;
-    filter: grayscale(100%) opacity(0.8);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    /* No grayscale */
 }
 
 .card:hover .icon {
-    transform: scale(1.1);
-    filter: grayscale(0%) opacity(1);
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 0 20px var(--accent));
+    /* Colorful glow */
 }
 
 .card h2 {
