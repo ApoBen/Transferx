@@ -35,7 +35,6 @@ const btns = {
     back: document.querySelectorAll('.back-btn'),
     copyId: document.getElementById('copy-id-btn'),
     refreshId: document.getElementById('refresh-id-btn'),
-    themeToggle: document.getElementById('theme-toggle-btn'),
     connect: document.getElementById('connect-btn')
 };
 
@@ -358,9 +357,7 @@ btns.refreshId.addEventListener('click', () => {
     }
 });
 
-btns.themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('amoled-theme');
-});
+
 
 btns.connect.addEventListener('click', () => {
     const id = dom.remotePeerIdInput.value;
@@ -397,7 +394,12 @@ document.addEventListener('mousedown', () => cursorRing.classList.add('active'))
 document.addEventListener('mouseup', () => cursorRing.classList.remove('active'));
 
 // Animasyon döngüsü (Lerp - Smooth Follow)
+// Animasyon döngüsü (Lerp - Smooth Follow)
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 function animateCursor() {
+    if (isTouchDevice) return; // Disable on touch devices
+
     // 0.15 = Takip hızı (daha düşük = daha "ağır/lazy", daha yüksek = daha "sıkı")
     // Bu gecikme "ivmelenme" hissi yaratır.
     const speed = 0.15;
@@ -417,4 +419,8 @@ function animateCursor() {
     requestAnimationFrame(animateCursor);
 }
 
-animateCursor();
+if (!isTouchDevice) {
+    animateCursor();
+} else {
+    cursorRing.style.display = 'none';
+}

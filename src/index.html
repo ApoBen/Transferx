@@ -3,79 +3,85 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Dosya Transferi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TransferX - Next Gen P2P</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 
 <body>
+    <!-- Background Effects -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
     <div class="title-bar">
         <div class="app-title">TransferX</div>
         <div style="flex:1; -webkit-app-region: drag;"></div>
-        <button id="theme-toggle-btn"
-            style="background:none; -webkit-app-region: no-drag; font-size: 16px; padding: 5px; margin-right: 10px;"
-            title="Temayı Değiştir">🌓</button>
+        <div class="win-controls" style="-webkit-app-region: no-drag;">
+            <!-- Window controls could go here if custom -->
+        </div>
     </div>
 
     <div class="container" id="app-container">
         <!-- HOME VIEW -->
         <div id="view-home" class="view active">
-            <h1>Ne yapmak istersiniz?</h1>
+            <h1>TransferX</h1>
             <div class="card-container">
                 <div class="card" id="btn-go-sender">
-                    <div class="icon">📤</div>
-                    <h2>Dosya Gönder</h2>
-                    <p>Bir oturum oluştur ve dosya paylaş.</p>
+                    <div class="icon">🚀</div>
+                    <h2>Gönder</h2>
+                    <p>Oturum oluştur ve dosyalarını ışık hızında paylaş.</p>
                 </div>
                 <div class="card" id="btn-go-receiver">
-                    <div class="icon">📥</div>
-                    <h2>Dosya Al</h2>
-                    <p>Mevcut bir oturuma katıl ve dosya indir.</p>
+                    <div class="icon">🪐</div>
+                    <h2>Al</h2>
+                    <p>Mevcut bir oturuma katıl ve dosyaları indir.</p>
                 </div>
             </div>
         </div>
 
         <!-- SENDER VIEW -->
         <div id="view-sender" class="view hidden">
-            <button class="back-btn" data-target="home">← Geri</button>
+            <button class="back-btn" data-target="home">❮ Geri</button>
             <div class="panel">
-                <div class="status-box">
-                    <h3>Oturum Kodunuz</h3>
-                    <div class="code-display">
-                        <span id="my-peer-id">Yükleniyor...</span>
-                        <div class="action-buttons">
-                            <button id="copy-id-btn" title="Kopyala">📋</button>
-                            <button id="refresh-id-btn" title="Yeni Kod">🔄</button>
-                        </div>
+                <div class="code-display">
+                    <h3
+                        style="margin-bottom:10px; color:var(--text-muted); text-transform:uppercase; font-size:12px; letter-spacing:2px;">
+                        Transfer Kimliği</h3>
+                    <span id="my-peer-id">Oluşturuluyor...</span>
+                    <div class="action-buttons">
+                        <button id="copy-id-btn" title="Kopyala">📋</button>
+                        <button id="refresh-id-btn" title="Yeni Kod">🔄</button>
                     </div>
                 </div>
 
                 <div class="dropzone" id="dropzone">
-                    <p>Dosyaları buraya sürükleyin veya tıklayın</p>
+                    <p>Dosyaları buraya bırakın veya tıklayın</p>
                     <input type="file" id="file-input" multiple style="display: none;">
                 </div>
 
                 <div class="file-list" id="sender-file-list">
-                    <!-- Dosyalar buraya gelecek -->
+                    <!-- Dosyalar -->
                 </div>
             </div>
         </div>
 
         <!-- RECEIVER VIEW -->
         <div id="view-receiver" class="view hidden">
-            <button class="back-btn" data-target="home">← Geri</button>
+            <button class="back-btn" data-target="home">❮ Geri</button>
             <div class="panel">
                 <div class="input-group">
-                    <input type="text" id="remote-peer-id" placeholder="Oturum Kodunu Girin">
+                    <input type="text" id="remote-peer-id" placeholder="Transfer Kimliğini Girin">
                     <button id="connect-btn">Bağlan</button>
                 </div>
 
-                <div id="connection-status" class="status-msg"></div>
+                <div id="connection-status"></div>
 
                 <div class="file-list" id="receiver-file-list">
-                    <!-- Karşı tarafın dosyaları buraya gelecek -->
+                    <!-- Dosyalar -->
                 </div>
             </div>
         </div>
