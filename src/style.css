@@ -426,10 +426,11 @@ body.amoled-theme h1 {
     border: 1px solid var(--card-border);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    width: 60px;
-    height: 60px;
-    border-radius: 18px;
-    font-size: 1.5rem;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    /* Circle for harmony */
+    font-size: 1.3rem;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
@@ -544,9 +545,8 @@ body.amoled-theme h1 {
 
 @media (max-width: 768px) {
     .container {
-        padding-bottom: 140px;
-        padding-top: 100px;
-        /* Increased to clear the back button */
+        padding-bottom: 120px;
+        padding-top: 20px;
     }
 
     h1 {
@@ -602,14 +602,18 @@ body.amoled-theme h1 {
         font-size: 1.6rem;
     }
 
+    .view {
+        padding-top: 100px;
+        justify-content: flex-start;
+    }
+
     .back-btn {
-        top: 25px;
-        left: 25px;
-        width: 44px;
-        height: 44px;
+        top: 20px;
+        left: 20px;
+        width: 46px;
+        height: 46px;
         font-size: 1.1rem;
         z-index: 5000;
-        /* Ensure it stays on top */
         background: var(--card-bg);
         border: 1.5px solid var(--card-border);
     }
