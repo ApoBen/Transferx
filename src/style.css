@@ -148,28 +148,39 @@ body {
     flex: 1;
     position: relative;
     padding: 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
     display: flex;
-    /* Center logic */
-    flex-direction: column;
+    justify-content: center;
+    /* Center horizontally */
+    overflow-x: hidden;
 }
 
 .view {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 40px;
-    /* More top padding */
+    padding: 60px 20px;
+    /* Generalized Padding */
     opacity: 0;
     pointer-events: none;
     transform: translateY(10px);
     transition: all 0.4s ease;
-    max-width: 1000px;
-    margin: 0 auto;
+}
+
+/* Desktop Specific Adjustments via Media Query to Ensure Unity */
+@media (min-width: 769px) {
+    .view {
+        justify-content: center;
+        /* Center vertically on PC */
+        padding-top: 0;
+    }
 }
 
 .view.active {
@@ -190,9 +201,10 @@ h1 {
     color: var(--text-main);
     letter-spacing: -0.5px;
     text-align: center;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Home Cards */
+/* Cards (Unified Style) */
 .card-container {
     display: flex;
     gap: 30px;
@@ -216,6 +228,7 @@ h1 {
     background: var(--card-hover-bg);
     transform: translateY(-8px);
     border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .card .icon {
@@ -228,7 +241,6 @@ h1 {
 .card:hover .icon {
     transform: scale(1.1);
     filter: grayscale(0%) opacity(1);
-    /* No color filter, keep original emoji color */
 }
 
 .card h2 {
@@ -333,6 +345,7 @@ h1 {
 .icon-btn-large:hover {
     background: var(--accent);
     color: #fff;
+    transform: scale(1.05);
 }
 
 /* File Grid */
@@ -372,6 +385,7 @@ h1 {
 
 .file-item:hover {
     background: var(--card-hover-bg);
+    transform: translateY(-3px);
 }
 
 .file-name {
@@ -456,18 +470,15 @@ h1 {
     color: #000;
 }
 
-/* Dropzone (FIXED WIDTH OVERFLOW) */
 .dropzone {
     border: 2px dashed rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     padding: 50px 30px;
-    /* Increased padding */
     text-align: center;
     color: var(--text-muted);
     transition: 0.3s;
     background: rgba(0, 0, 0, 0.1);
     min-height: 150px;
-    /* Ensure height */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -486,37 +497,36 @@ h1 {
     color: var(--text-main);
 }
 
-/* Back Button (FIXED OVERFLOW) */
+/* Back Button (Icon Only & Unified) */
 .back-btn {
     position: absolute;
-    top: 30px;
-    left: 30px;
+    top: 40px;
+    left: 40px;
     background: rgba(44, 44, 46, 0.9);
     border: 1px solid var(--card-border);
     color: var(--text-main);
-    padding: 8px 18px;
-    /* Proper padding for text */
-    border-radius: 20px;
-    /* Pill shape */
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 50;
-    white-space: nowrap;
-    /* Prevent wrap */
-    width: auto;
-    /* Allow auto width */
-    min-width: 80px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .back-btn:hover {
     background: var(--text-main);
     color: #000;
-    transform: translateX(-2px);
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.back-btn:active {
+    transform: scale(0.95);
 }
 
 /* Status Logic */
@@ -530,7 +540,7 @@ h1 {
     font-size: 0.9rem;
 }
 
-/* Mobile */
+/* Mobile Adjustments */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -544,10 +554,10 @@ h1 {
     }
 
     .view {
-        padding: 70px 20px 20px 20px;
-        height: auto;
-        min-height: 100%;
+        /* On Mobile, layout starts from top */
+        padding: 80px 20px 20px 20px;
         justify-content: flex-start;
+        display: flex;
     }
 
     .card-container {
@@ -561,21 +571,17 @@ h1 {
         padding: 30px;
     }
 
-    /* Back button positioning for mobile safety */
     .back-btn {
         top: 20px;
-        left: 15px;
-        font-size: 0.9rem;
-        padding: 8px 16px;
+        left: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 
     .file-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
-    }
-
-    .terminal-panel input[type="text"] {
-        font-size: 1.1rem;
     }
 
     #my-peer-id {
