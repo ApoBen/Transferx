@@ -49,16 +49,21 @@ body.amoled-theme {
     -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto !important;
+    /* FORCED SCROLLING */
+}
+
 body {
     font-family: var(--font-main);
     background-color: var(--bg-color);
     background-image: var(--bg-gradient);
     background-attachment: fixed;
     color: var(--text-main);
-    min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    /* ALLOW SCROLLING */
     display: flex;
     flex-direction: column;
     letter-spacing: -0.02em;
@@ -83,10 +88,8 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Fix mobile viewport issues */
 @media (max-width: 768px) {
     body {
-        height: auto;
         background-attachment: scroll;
     }
 }
@@ -98,7 +101,6 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     z-index: -1;
     pointer-events: none;
     opacity: 0.2;
@@ -138,7 +140,7 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     }
 }
 
-/* --- FLOATING BUTTONS (Theme & Social) --- */
+/* --- FLOATING BUTTONS --- */
 .floating-btn,
 .social-btn {
     position: fixed;
@@ -149,11 +151,10 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
     color: var(--text-main);
     cursor: pointer;
     z-index: 2000;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,19 +177,18 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     height: 100%;
     fill: currentColor;
     opacity: 0.6;
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 
 .floating-btn:hover,
 .social-btn:hover {
-    transform: scale(1.15) rotate(5deg);
+    transform: scale(1.1) rotate(5deg);
     background: var(--text-main);
     color: var(--bg-color);
 }
 
 .social-btn:hover svg {
     opacity: 1;
-    transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
@@ -213,31 +213,35 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
 /* Layout */
 .container {
     flex: 1;
-    position: relative;
-    padding: 20px;
     width: 100%;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
 }
 
 .view {
-    position: relative;
-    /* Changed from absolute to allow natural flow & scroll */
+    position: absolute;
+    /* BACK TO ABSOLUTE TO FIX LAYOUT OVERLAP */
+    top: 0;
+    left: 0;
     width: 100%;
-    min-height: 80vh;
-    display: none;
+    min-height: 100vh;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 100px 20px;
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transform: translateY(20px);
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .view.active {
-    display: flex;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
     transform: translateY(0);
 }
 
@@ -247,11 +251,18 @@ h1 {
     margin-bottom: 60px;
     letter-spacing: -3px;
     text-align: center;
+    /* LOGO GRADIENT (Both Light & Dark) */
     background: linear-gradient(to bottom, var(--text-main) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+}
+
+body.amoled-theme h1 {
+    background: linear-gradient(to bottom, #ffffff 0%, #888888 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
 @media (max-width: 768px) {
@@ -275,38 +286,19 @@ h1 {
     text-align: center;
     cursor: pointer;
     backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
     box-shadow: var(--card-shadow);
-    transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+    transition: 0.3s ease-out;
 }
 
 .card:hover {
     background: var(--card-hover-bg);
-    transform: translateY(-15px) scale(1.02);
+    transform: translateY(-10px);
     border-color: var(--accent);
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
 }
 
 .card .icon {
     font-size: 64px;
     margin-bottom: 35px;
-    transition: 0.4s;
-}
-
-.card:hover .icon {
-    transform: scale(1.2) rotate(5deg);
-}
-
-.card h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    font-weight: 800;
-}
-
-.card p {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    line-height: 1.6;
 }
 
 /* --- RECEIVER VIEW --- */
@@ -347,13 +339,10 @@ body.amoled-theme .input-wrapper {
     font-size: 1.6rem;
     font-weight: 700;
     flex: 1;
-    min-width: 0;
     outline: none;
     text-align: center;
-    padding: 5px;
 }
 
-/* Fixed contrast button */
 .icon-btn-large {
     background: var(--text-main) !important;
     color: var(--bg-color) !important;
@@ -366,12 +355,6 @@ body.amoled-theme .input-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.3s;
-}
-
-.icon-btn-large:hover {
-    opacity: 0.85;
-    transform: scale(1.05);
 }
 
 /* --- SENDER VIEW --- */
@@ -409,8 +392,14 @@ body.amoled-theme .input-wrapper {
 
 /* --- MOBILE --- */
 @media (max-width: 768px) {
+    .container {
+        padding-bottom: 150px;
+    }
+
+    /* Breath room */
     .view {
-        padding: 120px 20px;
+        padding: 80px 20px;
+        justify-content: flex-start;
     }
 
     .card-container {
@@ -424,10 +413,11 @@ body.amoled-theme .input-wrapper {
 
     h1 {
         font-size: 3rem;
+        margin-top: 40px;
     }
 
     .terminal-panel {
-        padding: 35px 25px;
+        padding: 30px 20px;
     }
 
     #my-peer-id {
