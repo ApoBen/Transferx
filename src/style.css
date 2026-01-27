@@ -769,7 +769,8 @@ body.amoled-theme .download-btn:hover {
         padding-right: 15px;
         /* Center vertically if content is short */
         min-height: 80vh;
-        justify-content: center;
+        justify-content: flex-start;
+        /* Changed from center to flex-start to avoid too much top space */
     }
 
     h1 {
