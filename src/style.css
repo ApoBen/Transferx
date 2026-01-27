@@ -222,14 +222,18 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     align-items: center;
     width: 100%;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: blur(10px);
+    transform: scale(0.95) translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+        filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .view.active {
     display: flex;
     opacity: 1;
-    transform: translateY(0);
+    filter: blur(0);
+    transform: scale(1) translateY(0);
 }
 
 .view.hidden {

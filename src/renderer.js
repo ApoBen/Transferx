@@ -107,13 +107,15 @@ btns.showQr.addEventListener('click', () => {
 
     if (isHidden) {
         dom.qrContainer.style.display = 'block';
-        dom.qrContainer.innerHTML = ''; // Clear previous
+        dom.qrContainer.innerHTML = '';
 
-        // Use qrcode.js
         try {
+            if (typeof QRCode === 'undefined') {
+                throw new Error("QRCode library not loaded");
+            }
             qrCodeObj = new QRCode(dom.qrContainer, {
-                text: dom.myPeerId.innerText,
-                width: 200, // Slightly larger
+                text: dom.myPeerId.innerText || "TransferX",
+                width: 200,
                 height: 200,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
@@ -122,7 +124,7 @@ btns.showQr.addEventListener('click', () => {
             btns.showQr.classList.add('active-state');
         } catch (e) {
             console.error("QR Gen Error:", e);
-            alert("QR Kod oluşturulamadı.");
+            alert("QR Kod kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
         }
     } else {
         dom.qrContainer.style.display = 'none';
@@ -136,19 +138,27 @@ btns.scanQr.addEventListener('click', () => {
     if (dom.qrReader.style.display === 'none') {
         dom.qrReader.style.display = 'block';
 
-        // Use Html5Qrcode (camera) instead of Scanner (file based UI) for better UX if possible, 
-        // but Scanner is easier to implement quickly. Let's stick to Scanner but configure it well.
-        html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader",
-            {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
+        try {
+            if (typeof Html5QrcodeScanner === 'undefined') {
+                throw new Error("Html5QrcodeScanner library not loaded");
             }
-        );
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader",
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0,
+                    showTorchButtonIfSupported: true
+                }
+            );
 
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-        btns.scanQr.classList.add('active-state');
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            btns.scanQr.classList.add('active-state');
+        } catch (e) {
+            console.error("Scanner Error:", e);
+            alert("Kamera kütüphanesi yüklenemedi.");
+            dom.qrReader.style.display = 'none';
+        }
     } else {
         closeScanner();
     }
