@@ -292,7 +292,7 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .body.amoled-theme .terminal-panel input[type="text"] {
+    body.amoled-theme .terminal-panel input[type="text"] {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -423,6 +423,12 @@ body.amoled-theme h1 {
     border-color: var(--accent);
 }
 
+/* Input actions grouping */
+.input-actions {
+    display: flex;
+    gap: 10px;
+}
+
 .terminal-panel input[type="text"] {
     background: transparent;
     border: none;
@@ -434,6 +440,7 @@ body.amoled-theme h1 {
     outline: none;
     text-align: center;
 }
+
 
 .icon-btn-large {
     background: var(--text-main) !important;
