@@ -764,14 +764,20 @@ body.amoled-theme .download-btn:hover {
     .container {
         padding-bottom: 90px;
         padding-top: 10px;
-        /* Reduced from 20px or 40px */
+        /* Reduced to pull content up */
         padding-left: 15px;
         padding-right: 15px;
+        /* Center vertically if content is short */
+        min-height: 80vh;
+        justify-content: center;
     }
 
     h1 {
         font-size: 2.6rem;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
+        /* Reduced margin */
+        margin-top: 0px;
+        /* Reset top margin */
     }
 
     .card {
