@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+// Sync Trigger: 2026-01-27 23:10
 const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -60,16 +61,21 @@ let localPeerServer = null;
 // Get Local WLAN/Ethernet IP
 ipcMain.handle('get-local-ip', () => {
   const interfaces = os.networkInterfaces();
+  const candidates = [];
   for (const key in interfaces) {
-    // Filter for common name patterns (Wi-Fi, Ethernet) to prioritize valid LAN IPs
-    // But mostly just look for IPv4, not internal (127.0.0.1)
+    // Ignore virtual and loopback interfaces
+    if (key.toLowerCase().includes('virtual') || key.toLowerCase().includes('vbox') || key.toLowerCase().includes('vmware')) continue;
+
     for (const iface of interfaces[key]) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
+        if (key.toLowerCase().includes('wi-fi') || key.toLowerCase().includes('wlan') || key.toLowerCase().includes('ethernet')) {
+          return iface.address; // High priority match
+        }
+        candidates.push(iface.address);
       }
     }
   }
-  return '127.0.0.1';
+  return candidates.length > 0 ? candidates[0] : '127.0.0.1';
 });
 
 // Start Local PeerServer
