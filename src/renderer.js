@@ -352,31 +352,81 @@ dom.dropzone.addEventListener('drop', (e) => {
 
 dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
-function handleFiles(files) {
+async function handleFiles(files) {
     for (const file of files) {
         try {
             file.id = uuidv4();
+
+            // Generate thumbnail if image
+            if (file.type.startsWith('image/')) {
+                file.thumbnail = await generateThumbnail(file);
+            }
+
             myFiles.push(file);
 
             const div = document.createElement('div');
             div.className = 'file-item';
             div.innerHTML = `
+                <div class="file-preview">
+                    ${file.thumbnail ? `<img src="${file.thumbnail}" alt="Preview">` : getFileIcon(file.type)}
+                </div>
                 <div class="file-info">
                     <span class="file-name">${file.name}</span>
                     <span class="file-size">${formatBytes(file.size)}</span>
                 </div>
-                <div>Hazır</div>
+                <div class="status-badge">Hazır</div>
             `;
             dom.senderFileList.appendChild(div);
         } catch (err) {
             console.error("Dosya ekleme hatası:", err);
-            alert("Dosya eklenirken hata: " + err.message);
         }
     }
-    // Push update to all peers if connected
     if (conn && conn.open) {
         sendCurrentFileList();
     }
+}
+
+function generateThumbnail(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 100;
+                const MAX_HEIGHT = 100;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', 0.7));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function getFileIcon(mime) {
+    if (mime.startsWith('video/')) return '🎬';
+    if (mime.startsWith('audio/')) return '🎵';
+    if (mime.includes('pdf')) return '📕';
+    if (mime.includes('zip') || mime.includes('rar')) return '📦';
+    return '📄';
 }
 
 function sendFile(fileId) {
@@ -427,39 +477,39 @@ function renderRemoteFiles(files) {
 
     // Add new files
     files.forEach((f, index) => {
-        if (existingIds.has(f.id)) {
-            // Already exists, maybe update status if needed, but skip for now
-            return;
-        }
+        if (existingIds.has(f.id)) return;
 
         const div = document.createElement('div');
         div.className = 'file-item';
-        div.dataset.id = f.id; // Store ID for preventing re-render
-        // Stagger animation: max 10 items stagger to prevent huge delays
+        div.dataset.id = f.id;
         const delay = Math.min(index * 0.05, 0.5);
         div.style.animationDelay = `${delay}s`;
 
         div.innerHTML = `
+            <div class="file-preview">
+                ${f.thumbnail ? `<img src="${f.thumbnail}" alt="Preview">` : getFileIcon(f.type)}
+            </div>
             <div class="file-info">
                 <span class="file-name">${f.name}</span>
                 <span class="file-size">${formatBytes(f.size)}</span>
             </div>
             <div class="actions">
                 <button class="download-btn" data-id="${f.id}">İndir</button>
-                <div class="progress-bar-container" style="display:none; width: 100px; height: 5px; background: #333; margin-top:5px; border-radius: 3px;">
-                    <div class="progress-bar" style="width: 0%; height: 100%; background: #0f0; border-radius: 3px;"></div>
+                <div class="progress-bar-container" style="display:none; width: 80px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow:hidden;">
+                    <div class="progress-bar" style="width: 0%; height: 100%; background: var(--accent);"></div>
                 </div>
-                <span class="status-msg" style="font-size: 0.8em; margin-left: 5px; display:none;"></span>
+                <span class="status-msg" style="font-size: 0.75em; display:none;"></span>
             </div>
         `;
         listContainer.appendChild(div);
 
-        // Attach listener specifically for this new button
         div.querySelector('.download-btn').addEventListener('click', (e) => {
             const id = e.target.dataset.id;
-            // Disable button
-            e.target.disabled = true;
-            e.target.innerText = "İsteniyor...";
+            e.target.style.display = 'none';
+            const item = e.target.closest('.file-item');
+            item.querySelector('.progress-bar-container').style.display = 'block';
+            item.querySelector('.status-msg').style.display = 'inline';
+            item.querySelector('.status-msg').innerText = "Bekleniyor...";
             requestFile(id);
         });
     });
@@ -478,7 +528,8 @@ function sendCurrentFileList() {
         name: f.name,
         size: f.size,
         type: f.type,
-        id: f.id
+        id: f.id,
+        thumbnail: f.thumbnail || null
     }));
     conn.send({ type: 'FILE_LIST', files: list });
 }
