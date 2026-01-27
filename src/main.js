@@ -88,3 +88,75 @@ ipcMain.handle('start-local-server', async () => {
     return { success: false, error: err.message };
   }
 });
+
+// --- UDP Discovery Logic ---
+const dgram = require('dgram');
+let udpSocket = null;
+let broadcastInterval = null;
+const UDP_PORT = 9001;
+
+ipcMain.handle('start-udp-broadcast', (event, peerId, machineName) => {
+  if (udpSocket) return; // Already running
+
+  try {
+    udpSocket = dgram.createSocket('udp4');
+
+    udpSocket.on('error', (err) => {
+      console.error(`UDP server error:\n${err.stack}`);
+      udpSocket.close();
+      udpSocket = null;
+    });
+
+    udpSocket.on('message', (msg, rinfo) => {
+      const message = msg.toString();
+      // Expected format: TransferX:<PeerID>:<MachineName>
+      if (message.startsWith('TransferX:') && !message.includes(peerId)) {
+        // Determine sender IP (rinfo.address)
+        // Emit to renderer to show in list
+        const parts = message.split(':');
+        if (parts.length >= 3) {
+          const foundPeerId = parts[1];
+          const foundName = parts[2];
+
+          // We found a peer!
+          const mainWindow = typeof BrowserWindow !== 'undefined' ? BrowserWindow.getAllWindows()[0] : null;
+          if (mainWindow) {
+            mainWindow.webContents.send('lan-peer-discovered', {
+              id: foundPeerId,
+              name: foundName,
+              ip: rinfo.address
+            });
+          }
+        }
+      }
+    });
+
+    udpSocket.bind(UDP_PORT, () => {
+      udpSocket.setBroadcast(true);
+      console.log("UDP Discovery started on port " + UDP_PORT);
+    });
+
+    // Broadcast my existence every 3 seconds
+    broadcastInterval = setInterval(() => {
+      if (udpSocket) {
+        const message = Buffer.from(`TransferX:${peerId}:${machineName}`);
+        udpSocket.send(message, 0, message.length, UDP_PORT, '255.255.255.255');
+      }
+    }, 3000);
+
+  } catch (e) {
+    console.error("UDP Start Error:", e);
+  }
+});
+
+ipcMain.handle('stop-udp-broadcast', () => {
+  if (broadcastInterval) {
+    clearInterval(broadcastInterval);
+    broadcastInterval = null;
+  }
+  if (udpSocket) {
+    udpSocket.close();
+    udpSocket = null;
+    console.log("UDP Discovery stopped.");
+  }
+});

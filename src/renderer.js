@@ -63,7 +63,9 @@ const dom = {
     senderFileList: document.getElementById('sender-file-list'),
     receiverFileList: document.getElementById('receiver-file-list'),
     remotePeerIdInput: document.getElementById('remote-peer-id'),
-    connectionStatus: document.getElementById('connection-status')
+    connectionStatus: document.getElementById('connection-status'),
+    discoveryArea: document.getElementById('lan-discovery-area'),
+    discoveryList: document.getElementById('discovered-devices-list')
 };
 
 // --- State ---
@@ -344,6 +346,12 @@ async function initPeer() {
         console.log('My peer ID is: ' + id);
         dom.myPeerId.innerText = id;
 
+        // Start Broadcasting if LAN
+        if (isLanMode) {
+            const machineName = "Cihaz " + Math.floor(Math.random() * 100); // Simple name for now
+            if (window.electronAPI) window.electronAPI.startDiscovery(id, machineName);
+        }
+
         // If QR was waiting for this ID, update it now
         if (dom.qrContainer.style.display !== 'none') {
             generateQrCode(id); // Handles object generation internally if LAN
@@ -374,6 +382,20 @@ function handleModeChange() {
             : "Global sunucular üzerinden transfer.";
     }
 
+    // Toggle Discovery UI
+    if (dom.discoveryArea) {
+        dom.discoveryArea.style.display = isLanMode ? 'block' : 'none';
+        if (!isLanMode) {
+            dom.discoveryList.innerHTML = `
+                <div class="empty-state" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                    <div class="loader" style="margin: 0 auto 10px;"></div>
+                    Cihaz aranıyor...
+                </div>`;
+            discoveredPeers.clear();
+            try { if (window.electronAPI) window.electronAPI.stopDiscovery(); } catch (e) { }
+        }
+    }
+
     // If peer exists, destroy and recreate
     if (peer) {
         peer.destroy();
@@ -381,6 +403,66 @@ function handleModeChange() {
         dom.myPeerId.innerText = "Mod Değişiyor...";
         setTimeout(() => initPeer(), 500);
     }
+}
+
+// LAN Discovery Handling
+const discoveredPeers = new Map();
+
+if (window.electronAPI && window.electronAPI.onLanDiscovered) {
+    window.electronAPI.onLanDiscovered((peerData) => {
+        if (discoveredPeers.has(peerData.id)) return;
+
+        discoveredPeers.set(peerData.id, peerData);
+        updateDiscoveryList();
+    });
+}
+
+function updateDiscoveryList() {
+    if (discoveredPeers.size === 0) return;
+
+    // Clear empty state if we have items
+    if (dom.discoveryList.querySelector('.empty-state')) {
+        dom.discoveryList.innerHTML = '';
+    }
+
+    discoveredPeers.forEach(p => {
+        // Check if already in DOM
+        if (document.getElementById(`peer-${p.id}`)) return;
+
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.id = `peer-${p.id}`;
+        div.style.cursor = 'pointer';
+        div.innerHTML = `
+            <div class="file-preview" style="background: var(--accent); color: white;">
+                💻
+            </div>
+            <div class="file-info">
+                <span class="file-name" style="font-size:1rem;">${p.name || 'Bilinmeyen Cihaz'}</span>
+                <span class="file-size">${p.ip}</span>
+            </div>
+            <div class="actions">
+                <button class="download-btn" style="padding: 6px 15px; font-size: 0.8rem;">Bağlan</button>
+            </div>
+        `;
+        div.addEventListener('click', () => {
+            // Connect logic
+            const config = {
+                host: p.ip,
+                port: 9000,
+                path: '/myapp'
+            };
+            // Switch to Receiver View
+            btns.goReceiver.click();
+
+            // Wait for view transition
+            setTimeout(() => {
+                dom.remotePeerIdInput.value = p.id;
+                connectToLanPeer(p.id, config);
+            }, 500);
+        });
+        dom.discoveryList.appendChild(div);
+    });
 }
 
 btns.radioCloud.addEventListener('change', handleModeChange);

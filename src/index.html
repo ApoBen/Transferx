@@ -80,6 +80,21 @@
             <p id="mode-desc" style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:10px;">
                 Global sunucular üzerinden transfer.
             </p>
+
+            <!-- Discovered Devices List -->
+            <div id="lan-discovery-area" style="display:none; margin-top: 30px; width: 100%;">
+                <h3
+                    style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase;">
+                    Bulunan Cihazlar (LAN)</h3>
+                <div id="discovered-devices-list" class="file-list" style="max-height: 200px; overflow-y: auto;">
+                    <!-- Devices will be injected here -->
+                    <div class="empty-state"
+                        style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                        <div class="loader" style="margin: 0 auto 10px;"></div>
+                        Cihaz aranıyor...
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- SENDER VIEW -->
