@@ -104,40 +104,38 @@ function showView(viewName) {
 // --- QR and Scanner Robustness ---
 let html5QrcodeScanner = null;
 
+function generateQrCode(text) {
+    if (typeof QRCode === 'undefined') return;
+
+    dom.qrContainer.innerHTML = '';
+    new QRCode(dom.qrContainer, {
+        text: text || dom.myPeerId.innerText || "TransferX",
+        width: 210,
+        height: 210,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Append Logo Overlay
+    const logo = document.createElement('div');
+    logo.className = 'qr-logo-overlay';
+    logo.innerText = 'TX';
+    dom.qrContainer.appendChild(logo);
+}
+
 btns.showQr.addEventListener('click', () => {
     const isHidden = dom.qrContainer.style.display === 'none';
 
     if (isHidden) {
         dom.qrContainer.style.display = 'block';
-        dom.qrContainer.innerHTML = '';
-
-        try {
-            // Check if library loaded
-            if (typeof QRCode === 'undefined') {
-                alert("QR kütüphanesi yüklenemedi. Lütfen internetinizi kontrol edip sayfayı yenileyin.");
-                return;
-            }
-
-            // Generate basic QR
-            new QRCode(dom.qrContainer, {
-                text: dom.myPeerId.innerText || "TransferX",
-                width: 210,
-                height: 210,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-
-            // Append Logo Overlay via JS element creation (style defined in style.css)
-            const logo = document.createElement('div');
-            logo.className = 'qr-logo-overlay';
-            logo.innerText = 'TX';
-            dom.qrContainer.appendChild(logo);
-
-            btns.showQr.classList.add('active-state');
-        } catch (e) {
-            console.error("QR Error:", e);
+        const currentId = dom.myPeerId.innerText;
+        if (currentId && currentId !== "Oluşturuluyor..." && currentId !== "Yenileniyor...") {
+            generateQrCode(currentId);
+        } else {
+            dom.qrContainer.innerHTML = '<div style="padding:20px; color:#666; font-size:0.8rem;">Kimlik bekleniyor...</div>';
         }
+        btns.showQr.classList.add('active-state');
     } else {
         dom.qrContainer.style.display = 'none';
         dom.qrContainer.innerHTML = '';
@@ -246,6 +244,11 @@ function initPeer() {
     peer.on('open', (id) => {
         console.log('My peer ID is: ' + id);
         dom.myPeerId.innerText = id;
+
+        // If QR was waiting for this ID, update it now
+        if (dom.qrContainer.style.display !== 'none') {
+            generateQrCode(id);
+        }
     });
 
     peer.on('connection', (c) => {
