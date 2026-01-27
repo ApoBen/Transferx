@@ -16,21 +16,21 @@ const uuidv4 = () => {
 // Fun words for Peer ID
 // Fun words for Peer ID - Expanded
 const adjectives = [
-    'Hizli', 'Guclu', 'Neseli', 'Parlak', 'Sakin', 'Cesur', 'Mavi', 'Yesil', 'Kirmizi', 'Turuncu',
-    'Zeki', 'Komik', 'Cilgin', 'Dev', 'Minik', 'Ucan', 'Yuzen', 'DansEden', 'Sarkici', 'Sihirli',
-    'Gizemli', 'Efsane', 'Muhtesem', 'Harika', 'Supur', 'Tatli', 'Ekshi', 'Acik', 'Koyu', 'Neon'
+    'Cesur', 'Neseli', 'Hizli', 'Sakin', 'Parlak', 'Cilgin', 'Uykulu', 'Komik', 'Kurnaz', 'Guclu',
+    'Tatli', 'Ekshi', 'Kibar', 'Vahsi', 'Efsane', 'Mistik', 'Sansli', 'Zeki', 'Deli', 'Sessiz',
+    'Gezgin', 'Merakli', 'Mutlu', 'Sadik', 'Asil', 'Nadir', 'Antik', 'Modern', 'Sihirli', 'Gizli'
 ];
 const nouns = [
-    'Patates', 'Kedi', 'Kaplan', 'Ejderha', 'Kartal', 'Aslan', 'Balik', 'Kus', 'Robot', 'Roket',
-    'Uzayli', 'Hayalet', 'Panda', 'Kopek', 'Tavsan', 'Gunes', 'Ay', 'Yildiz', 'Gezegen', 'KuyrukluYildiz',
-    'Ninja', 'Korsan', 'Sovalye', 'Prenses', 'Buyucu', 'Joker', 'Kral', 'Kralice', 'Elmas', 'Altin'
+    'Pirasa', 'Kedi', 'Panda', 'Robot', 'Kofte', 'Uzayli', 'Ejderha', 'Tost', 'Limon', 'Karpuz',
+    'Biber', 'Cicek', 'Bulut', 'Yildiz', 'Gunes', 'Deniz', 'Doga', 'Muzik', 'Sanat', 'Kitap',
+    'Kahve', 'Cay', 'Balik', 'Kus', 'Kartal', 'Aslan', 'Kaplan', 'Zebra', 'Roket', 'Gemik'
 ];
 
 function generateFunId() {
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    const num = Math.floor(Math.random() * 100);
-    return `${adj}${noun}${num}`;
+    // No numbers, just purely fun name
+    return `${adj}${noun}`;
 }
 
 // --- DOM Elements ---
@@ -64,6 +64,10 @@ const dom = {
     receiverFileList: document.getElementById('receiver-file-list'),
     remotePeerIdInput: document.getElementById('remote-peer-id'),
     connectionStatus: document.getElementById('connection-status'),
+    discoveryArea: document.getElementById('lan-discovery-area'),
+    remotePeerIdInput: document.getElementById('remote-peer-id'),
+    connectionStatus: document.getElementById('connection-status'),
+    connectedPeerInfo: document.getElementById('connected-peer-info'),
     discoveryArea: document.getElementById('lan-discovery-area'),
     discoveryList: document.getElementById('discovered-devices-list')
 };
@@ -520,6 +524,18 @@ function setupConnection(c) {
 
         // Check connection type (LAN vs Cloud)
         checkConnectionMode(conn);
+
+        // Update Connected Peer Info UI
+        if (dom.connectedPeerInfo) {
+            dom.connectedPeerInfo.style.display = 'block';
+            dom.connectedPeerInfo.innerHTML = `👤 Bağlandı: <span style="color:var(--accent)">${conn.peer}</span>`;
+
+            // Auto-hide QR if open
+            if (dom.qrContainer.style.display !== 'none') {
+                dom.qrContainer.style.display = 'none';
+                btns.showQr.classList.remove('active-state');
+            }
+        }
 
         if (!views.sender.classList.contains('hidden')) {
             // I am Sender - Push my list immediately to the new receiver

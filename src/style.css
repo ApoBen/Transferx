@@ -768,8 +768,8 @@ body.amoled-theme .download-btn:hover {
 @media (max-width: 768px) {
     .container {
         padding-bottom: 80px;
-        padding-top: 20px;
-        /* Reduced top padding */
+        padding-top: 5px;
+        /* Minimal top padding */
         padding-left: 15px;
         padding-right: 15px;
         min-height: auto;
@@ -778,10 +778,10 @@ body.amoled-theme .download-btn:hover {
     }
 
     h1 {
-        font-size: 2.2rem;
-        /* Slightly smaller for mobile */
-        margin-bottom: 10px;
-        margin-top: 0px;
+        font-size: 1.8rem;
+        /* Smaller title */
+        margin-bottom: 5px;
+        margin-top: 5px;
         line-height: 1.1;
     }
 
