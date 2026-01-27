@@ -294,6 +294,10 @@ function onScanFailure(error) {
 }
 
 btns.goSender.addEventListener('click', () => {
+    if (isLanMode && typeof window.electronAPI === 'undefined') {
+        alert("Web/Mobil sürümünde 'Yerel Ağ' üzerinden dosya gönderilemez. Lütfen Global modu seçin veya Masaüstü uygulamasını kullanın.");
+        return;
+    }
     initPeer();
     showView('sender');
 });
@@ -321,16 +325,12 @@ async function initPeer() {
     if (isLanMode) {
         // Start Local Server if needed
         if (typeof window.electronAPI === 'undefined') {
-            console.warn("Electron API bulunamadı. LAN modu devre dışı bırakılıyor.");
-            isLanMode = false;
-            alert("Yerel Ağ modu sadece masaüstü uygulamasında kullanılabilir. Global moda dönülüyor.");
-            btns.radioCloud.checked = true;
-            handleModeChange();
-            return;
-        }
-
-        try {
-            if (window.electronAPI) {
+            console.warn("Web/Mobile Environment: Skipping Local Server start.");
+            // We do NOT return or disable LAN mode here anymore.
+            // We just proceed, but we won't have a local IP to broadcast.
+            // We will rely on Manual QR Connection (Receiver Mode).
+        } else {
+            try {
                 await window.electronAPI.startLocalServer();
                 localIp = await window.electronAPI.getLocalIp();
                 console.log("Local Mode Active. IP:", localIp);
@@ -341,15 +341,14 @@ async function initPeer() {
                     path: '/myapp',
                     debug: 2
                 };
-            } else {
-                throw new Error("Electron API bulunamadı. Yerel ağ modu sadece masaüstü uygulamasında çalışır.");
+            } catch (e) {
+                console.error("Local Server Error:", e);
+                alert("Yerel sunucu başlatılamadı: " + e);
+                return;
             }
-        } catch (e) {
-            console.error("Local Server Error:", e);
-            alert("Yerel sunucu başlatılamadı: " + e);
-            return;
         }
     }
+
 
     console.log("Generated ID:", myId);
 
@@ -395,16 +394,11 @@ function handleModeChange() {
             : "Global sunucular üzerinden transfer.";
     }
 
-    // Web/Mobile Check: Block LAN mode if API missing
+    // Web/Mobile Check: Show Alert only if trying to be Sender in LAN mode
+    // We allow switching to LAN, but we should warn about limitations.
     if (isLanMode && typeof window.electronAPI === 'undefined') {
-        alert("Yerel Ağ modu sadece TransferX Masaüstü uygulamasında çalışır. Web sürümünde sadece Global sunucular kullanılabilir.");
-        btns.radioCloud.checked = true;
-        // Recursive call will handle the rest because checked changed? 
-        // No, manual reset needed to avoid loop or inconsistency
-        btns.radioLan.checked = false;
-        isLanMode = false;
-        if (desc) desc.innerText = "Global sunucular üzerinden transfer.";
-        // Don't return, let it proceed to clean up UI as if cloud mode was selected
+        // Just Update UI Text to explain
+        if (desc) desc.innerHTML = "Yerel Ağ (Sadece Alıcı). <br><span style='font-size:0.75em; color:var(--accent)'>Bu cihazda dosya göndermek için Masaüstü uygulaması gerekir.</span>";
     }
 
     // Toggle Discovery UI
