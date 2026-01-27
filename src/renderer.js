@@ -321,16 +321,20 @@ async function initPeer() {
     if (isLanMode) {
         // Start Local Server if needed
         try {
-            await window.electronAPI.startLocalServer();
-            localIp = await window.electronAPI.getLocalIp();
-            console.log("Local Mode Active. IP:", localIp);
+            if (window.electronAPI) {
+                await window.electronAPI.startLocalServer();
+                localIp = await window.electronAPI.getLocalIp();
+                console.log("Local Mode Active. IP:", localIp);
 
-            peerConfig = {
-                host: localIp,
-                port: 9000,
-                path: '/myapp',
-                debug: 2
-            };
+                peerConfig = {
+                    host: localIp,
+                    port: 9000,
+                    path: '/myapp',
+                    debug: 2
+                };
+            } else {
+                throw new Error("Electron API bulunamadı. Yerel ağ modu sadece masaüstü uygulamasında çalışır.");
+            }
         } catch (e) {
             console.error("Local Server Error:", e);
             alert("Yerel sunucu başlatılamadı: " + e);
