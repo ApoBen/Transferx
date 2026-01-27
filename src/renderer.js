@@ -343,7 +343,8 @@ async function initPeer() {
                 };
             } catch (e) {
                 console.error("Local Server Error:", e);
-                alert("Yerel sunucu başlatılamadı: " + e);
+                // Alert removed to prevent error on mobile/web
+                // alert("Yerel sunucu başlatılamadı: " + e); 
                 return;
             }
         }
@@ -577,6 +578,12 @@ dom.dropzone.addEventListener('drop', (e) => {
 });
 
 dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+// Receiver File Input Handler
+const receiverFileInput = document.getElementById('receiver-file-input');
+if (receiverFileInput) {
+    receiverFileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+}
 
 async function handleFiles(files) {
     for (const file of files) {
