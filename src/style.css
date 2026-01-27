@@ -50,13 +50,17 @@
 }
 
 body.amoled-theme {
-    /* --- Ultra Monochrome Dark --- */
-    --bg-gradient: radial-gradient(circle at 50% 50%, #1c1c1e 0%, #000000 80%, #000000 100%);
+    /* --- Breathing Dark Theme --- */
+    /* Dark Metallic/Onyx breathing gradient */
+    --bg-gradient: linear-gradient(-45deg, #1c1c1e, #000000, #2c3e50, #1a1a1a);
+    --bg-size: 400% 400%;
+
     --bg-color: #000000;
-    --card-bg: rgba(20, 20, 20, 0.85);
-    --card-border: rgba(255, 255, 255, 0.15);
+    --card-bg: rgba(20, 20, 20, 0.75);
+    /* Glassy Dark */
+    --card-border: rgba(255, 255, 255, 0.1);
     --card-shadow: 0 10px 50px rgba(0, 0, 0, 1);
-    --card-hover-bg: rgba(30, 30, 30, 0.95);
+    --card-hover-bg: rgba(30, 30, 30, 0.85);
     --text-main: #ffffff;
     --text-muted: #8e8e93;
     --accent: #ffffff;
