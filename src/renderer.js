@@ -110,21 +110,33 @@ btns.showQr.addEventListener('click', () => {
         dom.qrContainer.innerHTML = '';
 
         try {
-            if (typeof QRCode === 'undefined') {
-                throw new Error("QRCode library not loaded");
+            if (typeof kjua === 'undefined') {
+                throw new Error("Kjua library not loaded");
             }
-            qrCodeObj = new QRCode(dom.qrContainer, {
+
+            // Generate QR with kjua (supports logos/images)
+            const qrEl = kjua({
+                render: 'canvas',
+                crisp: true,
+                minVersion: 1,
+                ecLevel: 'H', // High error correction for logo
+                size: 200,
+                fill: '#000000',
+                back: '#ffffff',
                 text: dom.myPeerId.innerText || "TransferX",
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
+                rounded: 10,
+                quiet: 1,
+                mode: 'label',
+                label: 'TX',
+                fontname: 'Outfit',
+                fontcolor: '#1c1c1e'
             });
+
+            dom.qrContainer.appendChild(qrEl);
             btns.showQr.classList.add('active-state');
         } catch (e) {
             console.error("QR Gen Error:", e);
-            alert("QR Kod kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
+            alert("QR Kod kütüphanesi yüklenemedi. Lütfen sayfayı yenileyin.");
         }
     } else {
         dom.qrContainer.style.display = 'none';
@@ -133,30 +145,32 @@ btns.showQr.addEventListener('click', () => {
     }
 });
 
-let html5QrcodeScanner = null;
-btns.scanQr.addEventListener('click', () => {
+let html5QrScanner = null;
+btns.scanQr.addEventListener('click', async () => {
     if (dom.qrReader.style.display === 'none') {
         dom.qrReader.style.display = 'block';
+        dom.qrReader.innerHTML = ''; // Clear previous
 
         try {
-            if (typeof Html5QrcodeScanner === 'undefined') {
-                throw new Error("Html5QrcodeScanner library not loaded");
+            if (typeof Html5Qrcode === 'undefined') {
+                throw new Error("Html5Qrcode library not loaded");
             }
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "qr-reader",
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0,
-                    showTorchButtonIfSupported: true
-                }
+
+            html5QrScanner = new Html5Qrcode("qr-reader");
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // Start scanning with prioritized back camera
+            await html5QrScanner.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess
             );
 
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
             btns.scanQr.classList.add('active-state');
         } catch (e) {
             console.error("Scanner Error:", e);
-            alert("Kamera kütüphanesi yüklenemedi.");
+            alert("Kamera erişim hatası: " + e + "\nLütfen kamera izinlerini kontrol edin ve başka bir uygulamanın kamerayı kullanmadığından emin olun.");
             dom.qrReader.style.display = 'none';
         }
     } else {
@@ -165,14 +179,16 @@ btns.scanQr.addEventListener('click', () => {
 });
 
 function closeScanner() {
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().then(() => {
+    if (html5QrScanner) {
+        html5QrScanner.stop().then(() => {
             dom.qrReader.style.display = 'none';
             btns.scanQr.classList.remove('active-state');
-            html5QrcodeScanner = null;
-        }).catch(error => {
-            console.error("Failed to clear html5QrcodeScanner. ", error);
-            dom.qrReader.style.display = 'none'; // Force hide
+            html5QrScanner = null;
+        }).catch(err => {
+            console.error("Stop Error:", err);
+            dom.qrReader.style.display = 'none';
+            btns.scanQr.classList.remove('active-state');
+            html5QrScanner = null;
         });
     } else {
         dom.qrReader.style.display = 'none';
@@ -181,17 +197,14 @@ function closeScanner() {
 }
 
 function onScanSuccess(decodedText, decodedResult) {
-    // Handle the scanned code
     console.log(`Code matched = ${decodedText}`, decodedResult);
-
-    // Validate if it looks like a Peer ID (alphanumeric)
     if (decodedText && decodedText.length > 2) {
         dom.remotePeerIdInput.value = decodedText;
         closeScanner();
-        // Optional: Auto connect or let user click connect
-        // connectToPeer(decodedText); 
-        // Let's visual feedback and then user clicks connect ( safer)
         btns.connect.focus();
+        // Visual feedback
+        dom.remotePeerIdInput.style.borderColor = 'var(--success)';
+        setTimeout(() => dom.remotePeerIdInput.style.borderColor = '', 2000);
     }
 }
 
