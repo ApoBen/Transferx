@@ -1,6 +1,17 @@
 // CDN used for PeerJS in index.html.
 // Native crypto.randomUUID used only for file IDs now.
-const uuidv4 = () => crypto.randomUUID();
+// CDN used for PeerJS in index.html.
+// Native crypto.randomUUID used only for file IDs now.
+const uuidv4 = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+    // Fallback for environments where crypto.randomUUID is not available
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+};
 
 // Fun words for Peer ID
 // Fun words for Peer ID - Expanded
@@ -35,12 +46,16 @@ const btns = {
     back: document.querySelectorAll('.back-btn'),
     copyId: document.getElementById('copy-id-btn'),
     refreshId: document.getElementById('refresh-id-btn'),
+    showQr: document.getElementById('show-qr-btn'),
+    scanQr: document.getElementById('scan-qr-btn'),
     themeToggle: document.getElementById('theme-toggle-btn'),
     connect: document.getElementById('connect-btn')
 };
 
 const dom = {
     myPeerId: document.getElementById('my-peer-id'),
+    qrContainer: document.getElementById('qr-container'),
+    qrReader: document.getElementById('qr-reader'),
     dropzone: document.getElementById('dropzone'),
     fileInput: document.getElementById('file-input'),
     senderFileList: document.getElementById('sender-file-list'),
@@ -60,17 +75,118 @@ function showView(viewName) {
     // Hide all views
     Object.values(views).forEach(el => {
         el.classList.remove('active');
-        el.classList.add('hidden');
+        // Wait for animation to finish before hiding (optional, but for now just simple toggle)
+        setTimeout(() => {
+            if (!el.classList.contains('active')) el.classList.add('hidden');
+        }, 400); // Check CSS transition time
     });
 
     // Show target
     const target = views[viewName];
     target.classList.remove('hidden');
 
-    // Small delay to allow CSS transition if needed, but critical for display:none
-    requestAnimationFrame(() => {
-        target.classList.add('active');
-    });
+    // Force reflow
+    void target.offsetWidth;
+
+    target.classList.add('active');
+
+    // Cleanup other view states
+    if (viewName !== 'receiver') closeScanner();
+    if (viewName !== 'sender') {
+        dom.qrContainer.style.display = 'none';
+        dom.qrContainer.innerHTML = '';
+        btns.showQr.classList.remove('active-state');
+    }
+}
+
+// ... existing code ...
+
+let qrCodeObj = null;
+btns.showQr.addEventListener('click', () => {
+    const isHidden = dom.qrContainer.style.display === 'none';
+
+    if (isHidden) {
+        dom.qrContainer.style.display = 'block';
+        dom.qrContainer.innerHTML = ''; // Clear previous
+
+        // Use qrcode.js
+        try {
+            qrCodeObj = new QRCode(dom.qrContainer, {
+                text: dom.myPeerId.innerText,
+                width: 200, // Slightly larger
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            btns.showQr.classList.add('active-state');
+        } catch (e) {
+            console.error("QR Gen Error:", e);
+            alert("QR Kod oluşturulamadı.");
+        }
+    } else {
+        dom.qrContainer.style.display = 'none';
+        dom.qrContainer.innerHTML = '';
+        btns.showQr.classList.remove('active-state');
+    }
+});
+
+let html5QrcodeScanner = null;
+btns.scanQr.addEventListener('click', () => {
+    if (dom.qrReader.style.display === 'none') {
+        dom.qrReader.style.display = 'block';
+
+        // Use Html5Qrcode (camera) instead of Scanner (file based UI) for better UX if possible, 
+        // but Scanner is easier to implement quickly. Let's stick to Scanner but configure it well.
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader",
+            {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            }
+        );
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        btns.scanQr.classList.add('active-state');
+    } else {
+        closeScanner();
+    }
+});
+
+function closeScanner() {
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear().then(() => {
+            dom.qrReader.style.display = 'none';
+            btns.scanQr.classList.remove('active-state');
+            html5QrcodeScanner = null;
+        }).catch(error => {
+            console.error("Failed to clear html5QrcodeScanner. ", error);
+            dom.qrReader.style.display = 'none'; // Force hide
+        });
+    } else {
+        dom.qrReader.style.display = 'none';
+        btns.scanQr.classList.remove('active-state');
+    }
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    // Handle the scanned code
+    console.log(`Code matched = ${decodedText}`, decodedResult);
+
+    // Validate if it looks like a Peer ID (alphanumeric)
+    if (decodedText && decodedText.length > 2) {
+        dom.remotePeerIdInput.value = decodedText;
+        closeScanner();
+        // Optional: Auto connect or let user click connect
+        // connectToPeer(decodedText); 
+        // Let's visual feedback and then user clicks connect ( safer)
+        btns.connect.focus();
+    }
+}
+
+function onScanFailure(error) {
+    // console.warn(`Code scan error = ${error}`);
 }
 
 btns.goSender.addEventListener('click', () => {
@@ -132,10 +248,17 @@ function setupConnection(c) {
 
     conn.on('open', () => {
         console.log("Bağlantı Kuruldu!");
-        if (dom.connectionStatus) dom.connectionStatus.innerText = "Bağlandı!";
+        if (dom.connectionStatus) dom.connectionStatus.innerHTML = "Bağlandı! <span style='color:#0f0'>●</span>";
+
+        // Listen for errors on the connection itself
+        conn.on('error', (err) => {
+            console.error("Connection Error:", err);
+            alert("Bağlantı Hatası: " + err);
+        });
 
         if (!views.sender.classList.contains('hidden')) {
-            // I am Sender - Send list if requested (handled in data)
+            // I am Sender - Push my list immediately to the new receiver
+            sendCurrentFileList();
         } else {
             // I am Receiver - Request list AND start polling
             requestList();
@@ -164,14 +287,7 @@ function handleData(data) {
     console.log("Data alındı:", data.type);
 
     if (data.type === 'GET_LIST') {
-        // Send my file names
-        const list = myFiles.map(f => ({
-            name: f.name,
-            size: f.size,
-            type: f.type,
-            id: f.id // we add ID when dropping
-        }));
-        conn.send({ type: 'FILE_LIST', files: list });
+        sendCurrentFileList();
     }
 
     if (data.type === 'FILE_LIST') {
@@ -213,19 +329,28 @@ dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
 function handleFiles(files) {
     for (const file of files) {
-        file.id = uuidv4();
-        myFiles.push(file);
+        try {
+            file.id = uuidv4();
+            myFiles.push(file);
 
-        const div = document.createElement('div');
-        div.className = 'file-item';
-        div.innerHTML = `
-            <div class="file-info">
-                <span class="file-name">${file.name}</span>
-                <span class="file-size">${formatBytes(file.size)}</span>
-            </div>
-            <div>Hazır</div>
-        `;
-        dom.senderFileList.appendChild(div);
+            const div = document.createElement('div');
+            div.className = 'file-item';
+            div.innerHTML = `
+                <div class="file-info">
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatBytes(file.size)}</span>
+                </div>
+                <div>Hazır</div>
+            `;
+            dom.senderFileList.appendChild(div);
+        } catch (err) {
+            console.error("Dosya ekleme hatası:", err);
+            alert("Dosya eklenirken hata: " + err.message);
+        }
+    }
+    // Push update to all peers if connected
+    if (conn && conn.open) {
+        sendCurrentFileList();
     }
 }
 
@@ -264,39 +389,73 @@ function sendFile(fileId) {
 
 // --- File Handling (Receiver) ---
 function renderRemoteFiles(files) {
-    dom.receiverFileList.innerHTML = '';
-    files.forEach(f => {
+    // We do NOT clear innerHTML because it kills progress bars and event listeners.
+    // Instead we reconcile the list.
+
+    const listContainer = dom.receiverFileList;
+    const existingIds = new Set();
+
+    // Update existing or mark for removal
+    Array.from(listContainer.children).forEach(child => {
+        if (child.dataset.id) existingIds.add(child.dataset.id);
+    });
+
+    // Add new files
+    files.forEach((f, index) => {
+        if (existingIds.has(f.id)) {
+            // Already exists, maybe update status if needed, but skip for now
+            return;
+        }
+
         const div = document.createElement('div');
         div.className = 'file-item';
+        div.dataset.id = f.id; // Store ID for preventing re-render
+        // Stagger animation: max 10 items stagger to prevent huge delays
+        const delay = Math.min(index * 0.05, 0.5);
+        div.style.animationDelay = `${delay}s`;
+
         div.innerHTML = `
             <div class="file-info">
                 <span class="file-name">${f.name}</span>
                 <span class="file-size">${formatBytes(f.size)}</span>
             </div>
-            <button class="download-btn" data-id="${f.id}">İndir</button>
+            <div class="actions">
+                <button class="download-btn" data-id="${f.id}">İndir</button>
+                <div class="progress-bar-container" style="display:none; width: 100px; height: 5px; background: #333; margin-top:5px; border-radius: 3px;">
+                    <div class="progress-bar" style="width: 0%; height: 100%; background: #0f0; border-radius: 3px;"></div>
+                </div>
+                <span class="status-msg" style="font-size: 0.8em; margin-left: 5px; display:none;"></span>
+            </div>
         `;
-        dom.receiverFileList.appendChild(div);
-    });
+        listContainer.appendChild(div);
 
-    // Attach listeners
-    document.querySelectorAll('.download-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        // Attach listener specifically for this new button
+        div.querySelector('.download-btn').addEventListener('click', (e) => {
             const id = e.target.dataset.id;
+            // Disable button
+            e.target.disabled = true;
+            e.target.innerText = "İsteniyor...";
             requestFile(id);
         });
     });
+
+    // Optional: Remove files that are no longer in the list (if sender deleted them)
+    // For now we skip to avoid complexity with active downloads.
 }
 
 function requestFile(id) {
     conn.send({ type: 'REQUEST_FILE', id: id });
 }
 
-let incomingBuffers = {}; // id -> [chunks]
-
-function handleFileChunk(data) {
-    // This function needs to be hooked up to 'FILE_DATA' and 'FILE_START' etc in handleData
-    // See the 'handleData' simplified logic. 
-    // We need to expand handleData to capture FILE_START, FILE_DATA, FILE_END
+function sendCurrentFileList() {
+    if (!conn) return;
+    const list = myFiles.map(f => ({
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        id: f.id
+    }));
+    conn.send({ type: 'FILE_LIST', files: list });
 }
 
 // Expanding handleData for file transfer reception
@@ -312,12 +471,32 @@ handleData = function (data) {
     }
 
     if (data.type === 'FILE_START') {
-        activeDownloads[data.id] = { info: data, buffer: [] };
+        activeDownloads[data.id] = { info: data, buffer: [], received: 0 };
         console.log("İndirme başlıyor:", data.name);
+
+        // Show progress bar
+        const item = document.querySelector(`.file-item[data-id="${data.id}"]`);
+        if (item) {
+            const btn = item.querySelector('.download-btn');
+            const progCont = item.querySelector('.progress-bar-container');
+            const status = item.querySelector('.status-msg');
+
+            if (btn) btn.style.display = 'none';
+            if (progCont) progCont.style.display = 'block';
+            if (status) {
+                status.style.display = 'inline';
+                status.innerText = "İndiriliyor...";
+            }
+        }
     }
     else if (data.type === 'FILE_DATA') {
         if (activeDownloads[data.id]) {
-            activeDownloads[data.id].buffer.push(data.buffer);
+            const download = activeDownloads[data.id];
+            download.buffer.push(data.buffer);
+            download.received += data.buffer.byteLength || data.buffer.length;
+
+            // Update UI
+            updateProgress(data.id, download.received, download.info.size);
         }
     }
     else if (data.type === 'FILE_END') {
@@ -327,6 +506,18 @@ handleData = function (data) {
             const blob = new Blob(download.buffer, { type: download.info.mime });
             downloadBlob(blob, download.info.name);
             delete activeDownloads[data.id];
+
+            // Update UI
+            const item = document.querySelector(`.file-item[data-id="${data.id}"]`);
+            if (item) {
+                const status = item.querySelector('.status-msg');
+                const progCont = item.querySelector('.progress-bar-container');
+                if (progCont) progCont.style.display = 'none';
+                if (status) {
+                    status.innerText = "Tamamlandı ✅";
+                    status.style.color = '#0f0';
+                }
+            }
         }
     }
 };
@@ -338,6 +529,15 @@ function downloadBlob(blob, name) {
     a.download = name;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+function updateProgress(id, current, total) {
+    const item = document.querySelector(`.file-item[data-id="${id}"]`);
+    if (!item) return;
+
+    const percent = Math.floor((current / total) * 100);
+    const bar = item.querySelector('.progress-bar');
+    if (bar) bar.style.width = `${percent}%`;
 }
 
 // --- Utils ---
@@ -357,6 +557,8 @@ btns.refreshId.addEventListener('click', () => {
         setTimeout(() => initPeer(), 100); // Short delay to ensure cleanup
     }
 });
+
+
 
 
 

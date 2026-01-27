@@ -5,11 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TransferX - Next Gen P2P</title>
-    <link rel="stylesheet" href="style.css?v=0011">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1c1c1e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%231c1c1e%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Outfit,sans-serif%22 font-size=%2260%22 font-weight=%22800%22>TX</text></svg>">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -56,8 +70,14 @@
                         style="margin-bottom:10px; color:var(--text-muted); text-transform:uppercase; font-size:12px; letter-spacing:2px;">
                         Transfer Kimliği</h3>
                     <span id="my-peer-id">Oluşturuluyor...</span>
+
+                    <div id="qr-container"
+                        style="display:none; margin: 20px auto; padding: 10px; background: white; border-radius: 10px; width: fit-content;">
+                    </div>
+
                     <div class="action-buttons">
                         <button id="copy-id-btn" title="Kopyala">📋</button>
+                        <button id="show-qr-btn" title="QR Kod">🔳</button>
                         <button id="refresh-id-btn" title="Yeni Kod">🔄</button>
                     </div>
                 </div>
@@ -87,7 +107,13 @@
                     <div class="input-wrapper">
                         <span class="prompt">></span>
                         <input type="text" id="remote-peer-id" placeholder="Kimlik Girin" autocomplete="off">
-                        <button id="connect-btn" class="icon-btn-large">➜</button>
+                        <div class="input-actions">
+                            <button id="scan-qr-btn" class="icon-btn-large" title="QR Tara">📷</button>
+                            <button id="connect-btn" class="icon-btn-large">➜</button>
+                        </div>
+                    </div>
+                    <div id="qr-reader"
+                        style="width: 100%; margin-top: 15px; border-radius: 15px; overflow: hidden; display: none;">
                     </div>
                 </div>
 
