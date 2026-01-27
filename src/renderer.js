@@ -518,6 +518,9 @@ function setupConnection(c) {
             alert("Bağlantı Hatası: " + err);
         });
 
+        // Check connection type (LAN vs Cloud)
+        checkConnectionMode(conn);
+
         if (!views.sender.classList.contains('hidden')) {
             // I am Sender - Push my list immediately to the new receiver
             sendCurrentFileList();
@@ -842,6 +845,66 @@ handleData = function (data) {
         }
     }
 };
+
+// --- Connection Quality / Type Check ---
+async function checkConnectionMode(connection) {
+    if (!connection) return;
+
+    // If Manual LAN Mode is active, it's definitely LAN
+    if (isLanMode) {
+        updateConnectionUI(true, "Manuel LAN");
+        return;
+    }
+
+    // For Automatic/WebRTC mode, check stats
+    // Wait a bit for connection to stabilize and candidates to be selected
+    setTimeout(async () => {
+        try {
+            if (!connection.peerConnection) return;
+            const stats = await connection.peerConnection.getStats();
+            let isLocal = false;
+
+            stats.forEach(report => {
+                if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                    // Check the local candidate type
+                    const localCandidateId = report.localCandidateId;
+                    const localCandidate = stats.get(localCandidateId);
+                    if (localCandidate && localCandidate.candidateType === 'host') {
+                        isLocal = true;
+                    }
+                    // Double check with remote if possible, but local host usually means local network
+                }
+            });
+
+            if (isLocal) {
+                console.log("Connection Mode: LAN (Local Host Candidate)");
+                updateConnectionUI(true, "Otomatik LAN");
+            } else {
+                console.log("Connection Mode: Global (Relay/Srflx)");
+                updateConnectionUI(false, "Global");
+            }
+
+        } catch (e) {
+            console.warn("Stats check failed:", e);
+        }
+    }, 2000); // 2 second delay to let ICE settle
+}
+
+function updateConnectionUI(isLan, meta) {
+    const statusEl = dom.connectionStatus;
+    if (!statusEl) return;
+
+    // Preserve the dot
+    const baseText = "Bağlandı! <span style='color:#0f0'>●</span>";
+
+    if (isLan) {
+        // Add Lightning Icon for LAN
+        statusEl.innerHTML = `${baseText} <span title="${meta}" style="background:rgba(255,255,0,0.2); padding:2px 6px; border-radius:4px; margin-left:5px; font-size:0.9em;">⚡</span>`;
+    } else {
+        // Just text for Global
+        statusEl.innerHTML = baseText;
+    }
+}
 
 function downloadBlob(blob, name) {
     const url = URL.createObjectURL(blob);
