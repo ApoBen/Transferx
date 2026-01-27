@@ -1,4 +1,4 @@
-const CACHE_NAME = 'transferx-v4';
+const CACHE_NAME = 'transferx-v5';
 const urlsToCache = [
     './',
     './index.html',

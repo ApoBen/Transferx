@@ -247,7 +247,6 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* QR Code Overlay/Modal Style */
 #qr-container {
     margin: 20px auto;
     padding: 20px;
@@ -256,6 +255,28 @@ body.amoled-theme ::-webkit-scrollbar-thumb {
     width: fit-content;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
     animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    /* For logo overlay */
+}
+
+.qr-logo-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    background: #1c1c1e;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes popIn {
