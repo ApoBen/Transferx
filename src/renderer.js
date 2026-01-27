@@ -371,6 +371,10 @@ async function initPeer() {
         console.log('My peer ID is: ' + id);
         dom.myPeerId.innerText = id;
 
+        // Also update the receiver view ID
+        const receiverIdEl = document.getElementById('receiver-my-id');
+        if (receiverIdEl) receiverIdEl.innerText = id;
+
         // Start Broadcasting if LAN
         if (isLanMode) {
             const machineName = "Cihaz " + Math.floor(Math.random() * 100); // Simple name for now
