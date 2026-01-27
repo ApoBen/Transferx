@@ -49,6 +49,8 @@ const btns = {
     showQr: document.getElementById('show-qr-btn'),
     scanQr: document.getElementById('scan-qr-btn'),
     themeToggle: document.getElementById('theme-toggle-btn'),
+    radioCloud: document.getElementById('mode-cloud'),
+    radioLan: document.getElementById('mode-lan'),
     connect: document.getElementById('connect-btn')
 };
 
@@ -66,6 +68,8 @@ const dom = {
 
 // --- State ---
 let peer = null;
+let isLanMode = false;
+let localIp = null;
 let conn = null;
 let activePoll = null; // Interval ID for receiver polling
 let myFiles = []; // Array of File objects (Sender only)
@@ -108,13 +112,25 @@ function generateQrCode(text) {
     if (typeof QRCode === 'undefined') return;
 
     dom.qrContainer.innerHTML = '';
+    let qrData = text || dom.myPeerId.innerText || "TransferX";
+
+    // If LAN mode, wrap in JSON with IP info
+    if (isLanMode && localIp && peer) {
+        qrData = JSON.stringify({
+            id: peer.id,
+            mode: 'lan',
+            ip: localIp,
+            port: 9000
+        });
+    }
+
     new QRCode(dom.qrContainer, {
-        text: text || dom.myPeerId.innerText || "TransferX",
+        text: qrData,
         width: 210,
         height: 210,
         colorDark: "#000000",
         colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+        correctLevel: QRCode.CorrectLevel.L // Low error correction for denser data
     });
 
     // Append Logo Overlay
@@ -199,18 +215,76 @@ function closeScanner() {
 
 function onScanSuccess(decodedText, decodedResult) {
     if (decodedText && decodedText.length > 2) {
-        dom.remotePeerIdInput.value = decodedText;
+        let peerIdToConnect = decodedText;
+        let lanConfig = null;
+
+        // Check if JSON (LAN Mode)
+        try {
+            if (decodedText.startsWith('{')) {
+                const data = JSON.parse(decodedText);
+                if (data.mode === 'lan' && data.ip) {
+                    peerIdToConnect = data.id;
+                    lanConfig = {
+                        host: data.ip,
+                        port: data.port || 9000,
+                        path: '/myapp'
+                    };
+                    console.log("Discovered LAN Peer:", lanConfig);
+                }
+            }
+        } catch (e) {
+            console.warn("Scan parse error, assuming legacy ID:", e);
+        }
+
+        dom.remotePeerIdInput.value = peerIdToConnect;
         closeScanner();
 
-        // Auto connect after a short delay for better UX
+        // Auto connect
         setTimeout(() => {
-            connectToPeer(decodedText);
+            if (lanConfig) {
+                // We need to re-init our peer to match the target's network
+                // OR just connect if we can reach it.
+                // Issue: If I am on WAN and scan LAN, I might not reach.
+                // Best practice: Switch me to LAN mode momentarily or use a temp connection.
+                // For simplicity: We will force a connection attempt using a new Peer instance pointing to that server
+                // BUT PeerJS client connects to ONE server. So we must reconnect our client to THAT server.
+                connectToLanPeer(peerIdToConnect, lanConfig);
+            } else {
+                connectToPeer(peerIdToConnect);
+            }
         }, 500);
 
         // Visual indicator
         dom.remotePeerIdInput.style.borderColor = "#2ecc71";
         setTimeout(() => dom.remotePeerIdInput.style.borderColor = "", 2000);
     }
+}
+
+function connectToLanPeer(targetId, config) {
+    console.log("Connecting to LAN peer...");
+    dom.connectionStatus.innerText = "LAN Bağlantısı...";
+
+    // We must destroy current peer and connect to the local server of the SENDER
+    // Because the Sender IS the server in this architecture (Local PeerServer runs on Sender)
+    if (peer) peer.destroy();
+
+    // My ID doesn't matter much as receiver, but let's generate one
+    peer = new Peer(generateFunId(), {
+        host: config.host,
+        port: config.port,
+        path: config.path,
+        debug: 2
+    });
+
+    peer.on('open', (id) => {
+        console.log('Connected to Local Server with ID:', id);
+        connectToPeer(targetId);
+    });
+
+    peer.on('error', err => {
+        alert("LAN Bağlantı Hatası: " + err);
+        dom.connectionStatus.innerText = "Hata";
+    });
 }
 
 function onScanFailure(error) {
@@ -236,15 +310,35 @@ btns.back.forEach(btn => {
 });
 
 // --- PeerJS Logic ---
-function initPeer() {
+async function initPeer() {
     if (peer) return;
 
-    const myId = generateFunId();
+    let peerConfig = { debug: 2 };
+    let myId = generateFunId();
+
+    if (isLanMode) {
+        // Start Local Server if needed
+        try {
+            await window.electronAPI.startLocalServer();
+            localIp = await window.electronAPI.getLocalIp();
+            console.log("Local Mode Active. IP:", localIp);
+
+            peerConfig = {
+                host: localIp,
+                port: 9000,
+                path: '/myapp',
+                debug: 2
+            };
+        } catch (e) {
+            console.error("Local Server Error:", e);
+            alert("Yerel sunucu başlatılamadı: " + e);
+            return;
+        }
+    }
+
     console.log("Generated ID:", myId);
 
-    peer = new Peer(myId, {
-        debug: 2
-    });
+    peer = new Peer(myId, peerConfig);
 
     peer.on('open', (id) => {
         console.log('My peer ID is: ' + id);
@@ -252,7 +346,7 @@ function initPeer() {
 
         // If QR was waiting for this ID, update it now
         if (dom.qrContainer.style.display !== 'none') {
-            generateQrCode(id);
+            generateQrCode(id); // Handles object generation internally if LAN
         }
     });
 
@@ -267,6 +361,30 @@ function initPeer() {
         alert("Hata: " + err.type);
     });
 }
+
+// LAN Toggle Handler
+function handleModeChange() {
+    isLanMode = btns.radioLan.checked;
+
+    // Update description text
+    const desc = document.getElementById('mode-desc');
+    if (desc) {
+        desc.innerText = isLanMode
+            ? "Aynı ağdaki cihazlar arasında internetsiz transfer."
+            : "Global sunucular üzerinden transfer.";
+    }
+
+    // If peer exists, destroy and recreate
+    if (peer) {
+        peer.destroy();
+        peer = null;
+        dom.myPeerId.innerText = "Mod Değişiyor...";
+        setTimeout(() => initPeer(), 500);
+    }
+}
+
+btns.radioCloud.addEventListener('change', handleModeChange);
+btns.radioLan.addEventListener('change', handleModeChange);
 
 function connectToPeer(id) {
     if (!peer) return;

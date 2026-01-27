@@ -1,7 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    getAppVersion: () => ipcRenderer.invoke('get-app-version')
+    getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+    getLocalIp: () => ipcRenderer.invoke('get-local-ip'),
+    startLocalServer: () => ipcRenderer.invoke('start-local-server')
 });
 
 window.addEventListener('DOMContentLoaded', () => {

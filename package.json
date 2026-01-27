@@ -19,6 +19,7 @@
     "electron-builder": "^24.9.1"
   },
   "dependencies": {
+    "peer": "^1.0.2",
     "peerjs": "^1.5.2",
     "uuid": "^9.0.1"
   }

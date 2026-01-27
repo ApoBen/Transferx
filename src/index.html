@@ -60,6 +60,26 @@
                     <p>Mevcut bir oturuma katıl ve dosyaları indir.</p>
                 </div>
             </div>
+
+            <!-- Connection Mode Switcher -->
+            <div class="mode-switcher-container" style="margin-top: 30px; display: flex; justify-content: center;">
+                <div class="segmented-control">
+                    <input type="radio" name="conn-mode" id="mode-cloud" checked>
+                    <label for="mode-cloud" class="segment-label">
+                        <span class="segment-icon">☁️</span> İnternet
+                    </label>
+
+                    <input type="radio" name="conn-mode" id="mode-lan">
+                    <label for="mode-lan" class="segment-label">
+                        <span class="segment-icon">🏠</span> Yerel Ağ
+                    </label>
+
+                    <div class="segment-indicator"></div>
+                </div>
+            </div>
+            <p id="mode-desc" style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-top:10px;">
+                Global sunucular üzerinden transfer.
+            </p>
         </div>
 
         <!-- SENDER VIEW -->
