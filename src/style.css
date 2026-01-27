@@ -684,9 +684,14 @@ body.amoled-theme h1 {
 }
 
 @keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -762,23 +767,22 @@ body.amoled-theme .download-btn:hover {
 
 @media (max-width: 768px) {
     .container {
-        padding-bottom: 90px;
-        padding-top: 10px;
-        /* Reduced to pull content up */
+        padding-bottom: 80px;
+        padding-top: 20px;
+        /* Reduced top padding */
         padding-left: 15px;
         padding-right: 15px;
-        /* Center vertically if content is short */
-        min-height: 80vh;
+        min-height: auto;
+        /* Allow content to dictate height */
         justify-content: flex-start;
-        /* Changed from center to flex-start to avoid too much top space */
     }
 
     h1 {
-        font-size: 2.6rem;
-        margin-bottom: 15px;
-        /* Reduced margin */
+        font-size: 2.2rem;
+        /* Slightly smaller for mobile */
+        margin-bottom: 10px;
         margin-top: 0px;
-        /* Reset top margin */
+        line-height: 1.1;
     }
 
     .card {

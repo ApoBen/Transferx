@@ -592,7 +592,7 @@ dom.dropzone.addEventListener('drop', (e) => {
 
 dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
-dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
 
 // Receiver File Input Handler (REMOVED due to user request)
 const receiverFileInput = document.getElementById('receiver-file-input');
