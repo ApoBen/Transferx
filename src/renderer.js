@@ -320,6 +320,15 @@ async function initPeer() {
 
     if (isLanMode) {
         // Start Local Server if needed
+        if (typeof window.electronAPI === 'undefined') {
+            console.warn("Electron API bulunamadı. LAN modu devre dışı bırakılıyor.");
+            isLanMode = false;
+            alert("Yerel Ağ modu sadece masaüstü uygulamasında kullanılabilir. Global moda dönülüyor.");
+            btns.radioCloud.checked = true;
+            handleModeChange();
+            return;
+        }
+
         try {
             await window.electronAPI.startLocalServer();
             localIp = await window.electronAPI.getLocalIp();
@@ -380,6 +389,18 @@ function handleModeChange() {
         desc.innerText = isLanMode
             ? "Aynı ağdaki cihazlar arasında internetsiz transfer."
             : "Global sunucular üzerinden transfer.";
+    }
+
+    // Web/Mobile Check: Block LAN mode if API missing
+    if (isLanMode && typeof window.electronAPI === 'undefined') {
+        alert("Yerel Ağ modu sadece TransferX Masaüstü uygulamasında çalışır. Web sürümünde sadece Global sunucular kullanılabilir.");
+        btns.radioCloud.checked = true;
+        // Recursive call will handle the rest because checked changed? 
+        // No, manual reset needed to avoid loop or inconsistency
+        btns.radioLan.checked = false;
+        isLanMode = false;
+        if (desc) desc.innerText = "Global sunucular üzerinden transfer.";
+        // Don't return, let it proceed to clean up UI as if cloud mode was selected
     }
 
     // Toggle Discovery UI
