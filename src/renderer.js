@@ -201,7 +201,12 @@ function onScanSuccess(decodedText, decodedResult) {
     if (decodedText && decodedText.length > 2) {
         dom.remotePeerIdInput.value = decodedText;
         closeScanner();
-        btns.connect.focus();
+
+        // Auto connect after a short delay for better UX
+        setTimeout(() => {
+            connectToPeer(decodedText);
+        }, 500);
+
         // Visual indicator
         dom.remotePeerIdInput.style.borderColor = "#2ecc71";
         setTimeout(() => dom.remotePeerIdInput.style.borderColor = "", 2000);
