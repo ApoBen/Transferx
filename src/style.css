@@ -51,8 +51,8 @@
 
 body.amoled-theme {
     /* --- True AMOLED Breathing Theme --- */
-    /* Extremely deep, near-black metallic breathing gradient */
-    --bg-gradient: linear-gradient(-45deg, #000000, #030303, #08080a, #000000);
+    /* More visible breathing with subtle metallic white/silver hints */
+    --bg-gradient: linear-gradient(-45deg, #000000, #111111, #1a1a1a, #050505, #000000);
     --bg-size: 400% 400%;
 
     --bg-color: #000000;
