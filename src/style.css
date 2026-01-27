@@ -1,7 +1,8 @@
 :root {
     /* --- Apple-esque Premium Light Theme --- */
-    /* Soft, pastel "Mesh" gradient backbone */
-    --bg-gradient: radial-gradient(circle at 0% 0%, #eff6ff 0%, #f5f5f7 50%, #ffffff 100%);
+    /* Animated Mesh Gradient Backbone */
+    --bg-gradient: linear-gradient(-45deg, #eff6ff, #eef2f3, #e0eafc, #f5f5f7, #e8f2ff);
+    --bg-size: 400% 400%;
 
     --bg-color: #F5F5F7;
     /* Apple Off-White */
@@ -32,6 +33,20 @@
     --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --border-radius: 22px;
     /* Smoother corners */
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 body.amoled-theme {
@@ -76,7 +91,9 @@ body {
     flex-direction: column;
     letter-spacing: -0.01em;
     transition: background 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: background;
+    will-change: background, background-position;
+    background-size: var(--bg-size);
+    animation: gradientAnimation 15s ease infinite;
 }
 
 /* Scrollbar Style */

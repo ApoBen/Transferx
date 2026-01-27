@@ -658,6 +658,10 @@ async function handleFiles(files) {
     if (conn && conn.open) {
         sendCurrentFileList();
     }
+    // Trigger confetti when files added successfully
+    triggerLoveConfetti();
+    // Trigger confetti when files added successfully
+    triggerLoveConfetti();
 }
 
 function generateThumbnail(file) {
@@ -1081,5 +1085,63 @@ if (!isTouchDevice) {
     animateParticles();
 } else {
     canvas.style.display = 'none';
+}
+
+
+// --- Smart Drag & Drop ---
+const dragOverlay = document.getElementById('drag-overlay');
+let dragCounter = 0;
+
+window.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    if (views.sender.classList.contains('hidden') === false) { // Only show on Sender view
+        if (dragOverlay) dragOverlay.style.display = 'flex';
+    }
+});
+
+window.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter === 0) {
+        if (dragOverlay) dragOverlay.style.display = 'none';
+    }
+});
+
+window.addEventListener('dragover', (e) => {
+    e.preventDefault();
+});
+
+window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragCounter = 0;
+    if (dragOverlay) dragOverlay.style.display = 'none';
+
+    // Only handle if on Sender view
+    if (!views.sender.classList.contains('hidden')) {
+        handleFiles(e.dataTransfer.files);
+    }
+});
+
+// --- Confetti Trigger ---
+function triggerLoveConfetti() {
+    if (typeof confetti === 'function') {
+        const count = 200;
+        const defaults = {
+            origin: { y: 0.7 }
+        };
+
+        function fire(particleRatio, opts) {
+            confetti(Object.assign({}, defaults, opts, {
+                particleCount: Math.floor(count * particleRatio)
+            }));
+        }
+
+        fire(0.25, { spread: 26, startVelocity: 55, });
+        fire(0.2, { spread: 60, });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45, });
+    }
 }
 
