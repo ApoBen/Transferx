@@ -629,6 +629,12 @@ async function handleFiles(files) {
                 file.thumbnail = await generateThumbnail(file);
             }
 
+            // Prevent double adding
+            if (myFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) {
+                console.log("File already exists:", file.name);
+                continue;
+            }
+
             myFiles.push(file);
 
             const div = document.createElement('div');

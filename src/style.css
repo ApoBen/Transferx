@@ -605,6 +605,23 @@ body.amoled-theme h1 {
     transform: translateX(-5px);
 }
 
+/* Receiver ID Hover */
+#receiver-my-id {
+    transition: all 0.2s ease;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: transparent;
+}
+
+#receiver-my-id:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+}
+
+#receiver-my-id:active {
+    transform: scale(0.95);
+}
+
 /* Status Styles */
 .terminal-header {
     display: flex;
