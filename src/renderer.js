@@ -76,6 +76,18 @@ let conn = null;
 let activePoll = null; // Interval ID for receiver polling
 let myFiles = []; // Array of File objects (Sender only)
 
+// Initial Mode Setup
+if (typeof window.electronAPI === 'undefined') {
+    // Web/Mobile: Default to Cloud, Hide Switcher
+    const switcher = document.getElementById('mode-switcher-container');
+    if (switcher) switcher.style.display = 'none';
+
+    const desc = document.getElementById('mode-desc');
+    if (desc) desc.innerHTML = "Otomatik Bağlantı (WebRTC)<br><span style='font-size:0.75rem; color:var(--text-muted); opacity:0.7'>Aynı ağdaysanız hızlı transfer otomatik başlar.</span>";
+
+    isLanMode = false; // Force Cloud/WebRTC mode
+}
+
 // --- Navigation ---
 function showView(viewName) {
     // Hide all views
@@ -294,10 +306,7 @@ function onScanFailure(error) {
 }
 
 btns.goSender.addEventListener('click', () => {
-    if (isLanMode && typeof window.electronAPI === 'undefined') {
-        alert("Web/Mobil sürümünde 'Yerel Ağ' üzerinden dosya gönderilemez. Lütfen Global modu seçin veya Masaüstü uygulamasını kullanın.");
-        return;
-    }
+    // Removed old manual LAN check for web since UI is now hidden/automated
     initPeer();
     showView('sender');
 });
@@ -579,7 +588,9 @@ dom.dropzone.addEventListener('drop', (e) => {
 
 dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
-// Receiver File Input Handler
+dom.fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+// Receiver File Input Handler (REMOVED due to user request)
 const receiverFileInput = document.getElementById('receiver-file-input');
 if (receiverFileInput) {
     receiverFileInput.addEventListener('change', (e) => handleFiles(e.target.files));

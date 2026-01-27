@@ -62,7 +62,8 @@
             </div>
 
             <!-- Connection Mode Switcher -->
-            <div class="mode-switcher-container" style="margin-top: 30px; display: flex; justify-content: center;">
+            <div id="mode-switcher-container" class="mode-switcher-container"
+                style="margin-top: 30px; display: flex; justify-content: center;">
                 <div class="segmented-control">
                     <input type="radio" name="conn-mode" id="mode-cloud" checked>
                     <label for="mode-cloud" class="segment-label">
@@ -155,14 +156,7 @@
 
                 <!-- File Grid -->
                 <div class="file-grid-area">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h3>Gelen Dosyalar</h3>
-                        <label for="receiver-file-input" class="download-btn"
-                            style="cursor:pointer; display:flex; align-items:center; gap:5px; margin:0;">
-                            <span>📤</span> Dosya Gönder
-                        </label>
-                        <input type="file" id="receiver-file-input" multiple style="display: none;">
-                    </div>
+                    <h3>Gelen Dosyalar</h3>
                     <div class="file-grid" id="receiver-file-list">
                         <!-- Empty State -->
                         <div class="empty-state">
