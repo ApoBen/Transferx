@@ -579,7 +579,13 @@ btns.refreshId.addEventListener('click', () => {
         peer.destroy();
         peer = null;
         dom.myPeerId.innerText = "Yenileniyor...";
-        setTimeout(() => initPeer(), 100); // Short delay to ensure cleanup
+
+        // Reset QR state
+        dom.qrContainer.style.display = 'none';
+        dom.qrContainer.innerHTML = '';
+        btns.showQr.classList.remove('active-state');
+
+        setTimeout(() => initPeer(), 100);
     }
 });
 
