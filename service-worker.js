@@ -2,8 +2,8 @@ const CACHE_NAME = 'transferx-v9';
 const urlsToCache = [
     './',
     './index.html',
-    './style.css',
-    './renderer.js',
+    './src/style.css',
+    './src/renderer.js',
     'https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
     'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js',
